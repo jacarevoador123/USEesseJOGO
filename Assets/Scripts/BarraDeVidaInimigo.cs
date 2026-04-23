@@ -1,1 +1,1 @@
-public class BarraDeVidaInimigo : HUDController { }
+public class BarraDeVidaInimigo : BarraDeVida { }

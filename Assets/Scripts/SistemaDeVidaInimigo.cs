@@ -1,4 +1,4 @@
-public class SistemaDeVidaInimigo : HealthSystem
+public class SistemaDeVidaInimigo : SistemaDeVida
 {
     Inimigo inimigo;
     BarraDeVidaInimigo barraDeVidaInimigo;

@@ -47,18 +47,23 @@ public class PlayerController : MonoBehaviour
     private float lastShootTime = 0;
 
     [Space(5)]
+    [Header("Attack Settings")]
+    public float attackCooldown = 0.5f;
+    private float lastAttackTime;
+
+    [Space(5)]
     [Header("Upgrades")]
     [SerializeField] List<UpgradeData> upgrades = new();
 
 
-    private int playerHealth = 0;
+    public float vida = 0;
     private float xAxis;
     private float gravity;
     private PlayerStateList pState;
     private Rigidbody2D rb;
     private Animator anim;
     private SpriteRenderer spriteRenderer;
-    [HideInInspector] public HealthSystem health;
+    [HideInInspector] public SistemaDeVida sistemaDeVida;
 
     public static PlayerController Instance;
 
@@ -77,8 +82,8 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         pState = GetComponent<PlayerStateList>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        health = GetComponent<HealthSystem>();
-        playerHealth = health.currentHealth;
+        sistemaDeVida = GetComponent<SistemaDeVida>();
+        vida = sistemaDeVida.vidaAtual;
         gravity = rb.gravityScale;
     }
 
@@ -94,6 +99,7 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
         Shoot();
+        Attack();
         StartDash();
         PauseGame();
         VerificarUpgrades();
@@ -122,6 +128,25 @@ public class PlayerController : MonoBehaviour
         {
             spriteRenderer.flipX = false;
         }
+            MirrorChildren();
+    }
+
+    private void MirrorChildren()
+    {
+        foreach (var child in transform.GetComponentsInChildren<Transform>())
+        {
+            if (child == transform) continue;
+
+            Quaternion newRotation = Quaternion.identity;
+
+            if (spriteRenderer.flipX)
+            {
+                newRotation = Quaternion.Euler(180f * Vector3.up);
+            }
+
+            child.rotation = newRotation;
+        }
+
     }
 
     void GetInputs()
@@ -186,6 +211,20 @@ public class PlayerController : MonoBehaviour
             lastShootTime = Time.time + shootCooldown;
         }
     }
+
+    void Attack()
+    {
+    if (Input.GetKeyDown(KeyCode.F) && Time.time >= lastAttackTime)
+    {
+        if (pState.dashing) return; // opcional, evita atacar durante dash
+
+        lastAttackTime = Time.time + attackCooldown;
+
+        anim.SetTrigger("Attack");
+        AudioManager.Instance.Play("Attack");
+    }
+    }
+
 
     void StartDash()
     {
@@ -308,26 +347,26 @@ public class PlayerController : MonoBehaviour
     }
 
     // Método para dar dano no jogador
-    public void TakeDamage(int damage = 2)
+    public void AplicarDano(float damage = 2)
     {
-        health.TakeDamage(damage);
-        HUDController.Instance.UpdateHearts(); // Atualiza o HUD dos corações
+        sistemaDeVida.AplicarDano(damage);
+        HUDController.Instance.AtualizarVida(); // Atualiza o HUD dos corações
         AudioManager.Instance.Play("Dano");
         GameManager.Instance.TremerCamera();
         StartCoroutine(BlinkCoroutine());
-
-        if (health.currentHealth <= 0)
+        Debug.Log("Tomou dano!");
+        if (sistemaDeVida.vidaAtual <= 0)
         {
             Die();
         }
     }
 
     // Método para curar o jogador
-    public void Heal(int healAmount = 2)
+    /*public void Heal(int healAmount = 2)
     {
-        health.Heal(healAmount);
+        vida.Heal(healAmount);
         HUDController.Instance.UpdateHearts(); // Atualiza o HUD dos corações
-    }
+    }*/
 
     private void Die()
     {

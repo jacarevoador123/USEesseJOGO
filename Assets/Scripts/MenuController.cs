@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public void IniciarJogo()
+    public void IniciarJogo(string nomeFase)
     {
-        SceneManager.LoadScene("Jogo");
+        SceneManager.LoadScene(nomeFase);
     }
 
     public void Sair()

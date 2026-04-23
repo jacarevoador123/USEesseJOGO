@@ -12,7 +12,7 @@ public class HUDController : MonoBehaviour
     public Sprite emptyHeart; // Sprite do coracao vazio
     public bool jogoPausado { get; private set; }
 
-    private int currentHealth;
+    private float currentvida;
     private SistemaMoedas sistemaMoedas;
     private MenuPausa menuPausa;
 
@@ -34,21 +34,21 @@ public class HUDController : MonoBehaviour
     {
         sistemaMoedas = GetComponent<SistemaMoedas>();
         menuPausa = GetComponentInChildren<MenuPausa>(includeInactive: true);
-        UpdateHearts();
+        AtualizarVida();
     }
 
     // M�todo que atualiza a interface dos coracoes
-    public void UpdateHearts()
+    public void AtualizarVida()
     {
-        currentHealth = PlayerController.Instance.health.currentHealth;
-
+        currentvida = PlayerController.Instance.vida;
+        /*
         for (int i = 0; i < hearts.Length; i++)
         {
-            if (i < currentHealth / 2) // Se a posi��o do coracao est� totalmente preenchida
+            if (i < currentvida / 2) // Se a posi��o do coracao est� totalmente preenchida
             {
                 hearts[i].sprite = fullHeart;
             }
-            else if (i < currentHealth / 2 + (currentHealth % 2)) // Se o coracao est� pela metade
+            else if (i < currentvida / 2 + (currentvida % 2)) // Se o coracao est� pela metade
             {
                 hearts[i].sprite = halfHeart;
             }
@@ -57,6 +57,8 @@ public class HUDController : MonoBehaviour
                 hearts[i].sprite = emptyHeart;
             }
         }
+        */
+        Debug.Log("Criar o UpdateVida");
     }
 
     public void ColetarMoeda(int valor)

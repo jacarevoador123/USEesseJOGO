@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Armadilha : MonoBehaviour
 {
-    [SerializeField] int damage = 2;
+    [SerializeField] float damage = 2;
     [SerializeField] Transform checkPointPosition = null;
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -13,7 +13,7 @@ public class Armadilha : MonoBehaviour
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
 
-            player.TakeDamage(damage);
+            player.AplicarDano(damage);
 
             if (checkPointPosition != null)
             {
