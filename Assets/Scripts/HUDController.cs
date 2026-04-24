@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(SistemaMoedas))]
 public class HUDController : MonoBehaviour
 {
-    public Image[] hearts; // Array para armazenar as imagens dos coracoes
-    public Sprite fullHeart; // Sprite do coracao cheio
-    public Sprite halfHeart; // Sprite do coracao pela metade
-    public Sprite emptyHeart; // Sprite do coracao vazio
     public bool jogoPausado { get; private set; }
 
-    private float currentvida;
     private SistemaMoedas sistemaMoedas;
     private MenuPausa menuPausa;
 
@@ -34,37 +28,19 @@ public class HUDController : MonoBehaviour
     {
         sistemaMoedas = GetComponent<SistemaMoedas>();
         menuPausa = GetComponentInChildren<MenuPausa>(includeInactive: true);
-        AtualizarVida();
     }
 
-    // M�todo que atualiza a interface dos coracoes
+    // 🔥 Mantido só pra compatibilidade (não faz mais nada)
     public void AtualizarVida()
     {
-        currentvida = PlayerController.Instance.vida;
-        /*
-        for (int i = 0; i < hearts.Length; i++)
-        {
-            if (i < currentvida / 2) // Se a posi��o do coracao est� totalmente preenchida
-            {
-                hearts[i].sprite = fullHeart;
-            }
-            else if (i < currentvida / 2 + (currentvida % 2)) // Se o coracao est� pela metade
-            {
-                hearts[i].sprite = halfHeart;
-            }
-            else // coracao vazio
-            {
-                hearts[i].sprite = emptyHeart;
-            }
-        }
-        */
-        Debug.Log("Criar o UpdateVida");
+        // Agora quem cuida da vida é o SistemaDeVida + BarraDeVida
     }
 
     public void ColetarMoeda(int valor)
     {
         sistemaMoedas.GanharMoedas(valor);
     }
+
     public bool GastarMoedas(int custo)
     {
         if (custo > sistemaMoedas.moedas)

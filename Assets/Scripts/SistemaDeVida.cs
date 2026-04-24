@@ -22,6 +22,13 @@ public class SistemaDeVida : MonoBehaviour
     public virtual void AplicarDano(float dano)
     {
         vidaAtual -= dano;
+
+        PlayerController player = GetComponent<PlayerController>();
+        if (player != null)
+        {
+            player.FeedbackDano();
+        }
+
         if (vidaAtual <= 0)
         {
             Morrer();
@@ -41,8 +48,4 @@ public class SistemaDeVida : MonoBehaviour
         SceneManager.LoadScene(currentSceneName);
     }
 
-    internal void AplicarDano(object dano)
-    {
-        throw new NotImplementedException();
-    }
 }

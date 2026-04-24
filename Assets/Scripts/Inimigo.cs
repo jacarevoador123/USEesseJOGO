@@ -12,7 +12,7 @@ public class Inimigo : MonoBehaviour
 
     [Header("Ataque")]
     public int danoAtaque = 10;
-    public float tempoEntreAtaques = 0.7f;      // frequência do ataque
+    public float tempoEntreAtaques = 2f;      // frequência do ataque
     private bool playerNoAlcance = false;
     private bool atacando = false;
 
@@ -46,7 +46,7 @@ public class Inimigo : MonoBehaviour
 
     void Update()
     {
-        if (isKnockBacked || !vivo || playerNoAlcance) return;
+        if (isKnockBacked || !vivo || atacando) return;
         if (player == null) return;
 
         DetectarPlayer();
@@ -112,6 +112,8 @@ public class Inimigo : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             playerNoAlcance = true;
+
+            rb.velocity = Vector2.zero;
             anim.SetBool("Atacando", true);
 
             if (!atacando)
@@ -137,8 +139,7 @@ public class Inimigo : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             playerNoAlcance = false;
-            atacando = false;
-            anim.SetBool("Atacando", false);
+            
         }
     }
 
@@ -147,17 +148,28 @@ public class Inimigo : MonoBehaviour
         atacando = true;
 
         SistemaDeVida vida = playerObj.GetComponent<SistemaDeVida>();
+        
+        anim.SetTrigger("Ataque");
 
-        while (playerNoAlcance && vivo)
+        yield return new WaitForSeconds(2f);
+
+        while (vivo)
         {
-            anim.SetTrigger("Ataque");
+            rb.velocity = Vector2.zero;
 
-            if (vida != null)
+            if (playerNoAlcance && vida != null)
+            {
                 vida.AplicarDano(danoAtaque);
+                AudioManager.Instance.Play("Dano");
+            }
 
             yield return new WaitForSeconds(tempoEntreAtaques);
+
+            if (!playerNoAlcance)
+                break;
         }
 
+        anim.SetBool("Atacando", false);
         atacando = false;
     }
 

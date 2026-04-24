@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using Color = UnityEngine.Color;
 
 public class PlayerController : MonoBehaviour
 {
@@ -244,7 +246,7 @@ public class PlayerController : MonoBehaviour
     {
         canDash = false;
         pState.dashing = true;
-        AudioManager.Instance.Play("Attack");
+        AudioManager.Instance.Play("Dash");
         anim.SetTrigger("Dashing");
         rb.gravityScale = 0;
 
@@ -381,6 +383,10 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator BlinkCoroutine()//Piscar o jogador ao tomar dano
     {
+        isBlinking = true;
+
+        Color originalColor = spriteRenderer.color;
+
         for (int i = 0; i < blinkCount; i++)
         {
             spriteRenderer.color = damageColor;
@@ -388,6 +394,9 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.color = Color.white;
             yield return new WaitForSeconds(blinkDuration);
         }
+
+        spriteRenderer.color = originalColor;
+        isBlinking = false;
     }
 
 
@@ -416,5 +425,12 @@ public class PlayerController : MonoBehaviour
     public void EnableDoubleJump()
     {
         maxAirJumps = 1;
+    }
+
+    private bool isBlinking = false;
+    public void FeedbackDano()
+    {
+        if (!isBlinking)
+            StartCoroutine(BlinkCoroutine());
     }
 }

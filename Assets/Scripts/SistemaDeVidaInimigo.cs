@@ -12,6 +12,9 @@ public class SistemaDeVidaInimigo : SistemaDeVida
     public override void AplicarDano(float dano)
     {
         vidaAtual -= dano;
+
+        AudioManager.Instance.Play("DanoInimigo");
+
         if (vidaAtual <= 0)
         {
             Morrer();
