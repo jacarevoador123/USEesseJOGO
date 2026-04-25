@@ -355,7 +355,6 @@ public class PlayerController : MonoBehaviour
         HUDController.Instance.AtualizarVida(); // Atualiza o HUD dos corações
         AudioManager.Instance.Play("Dano");
         GameManager.Instance.TremerCamera();
-        StartCoroutine(BlinkCoroutine());
         Debug.Log("Tomou dano!");
         if (sistemaDeVida.vidaAtual <= 0)
         {
