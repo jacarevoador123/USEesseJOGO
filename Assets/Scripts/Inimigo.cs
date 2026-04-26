@@ -80,6 +80,7 @@ public class Inimigo : MonoBehaviour
         rb.velocity = new Vector2(direction * chaseSpeed, rb.velocity.y);
 
         spriteRenderer.flipX = movingRight == false;
+        MirrorChildren();
 
         anim.SetFloat("Velocidade", Mathf.Abs(rb.velocity.x));
     }
@@ -93,6 +94,8 @@ public class Inimigo : MonoBehaviour
         rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
 
         spriteRenderer.flipX = movingRight == false;
+        MirrorChildren();
+
         anim.SetFloat("Velocidade", Mathf.Abs(rb.velocity.x));
     }
 
@@ -100,6 +103,8 @@ public class Inimigo : MonoBehaviour
     {
         float initialDir = movingRight ? 1f : -1f;
         spriteRenderer.flipX = movingRight == false;
+        MirrorChildren();
+
         rb.velocity = new Vector2(initialDir * moveSpeed, rb.velocity.y);
     }
 
@@ -114,7 +119,6 @@ public class Inimigo : MonoBehaviour
             playerNoAlcance = true;
 
             rb.velocity = Vector2.zero;
-            anim.SetBool("Atacando", true);
 
             if (!atacando)
                 StartCoroutine(AtaqueContinuo(collision.gameObject));
@@ -147,20 +151,14 @@ public class Inimigo : MonoBehaviour
     {
         atacando = true;
 
-        SistemaDeVida vida = playerObj.GetComponent<SistemaDeVida>();
-        
-        anim.SetTrigger("Ataque");
-
-        yield return new WaitForSeconds(2f);
-
         while (vivo)
         {
             rb.velocity = Vector2.zero;
 
-            if (playerNoAlcance && vida != null)
+            if (playerNoAlcance)
             {
-                vida.AplicarDano(danoAtaque);
-                AudioManager.Instance.Play("Dano");
+                anim.SetTrigger("Ataque");
+                AudioManager.Instance.Play("GritoDeGuerra");
             }
 
             yield return new WaitForSeconds(tempoEntreAtaques);
@@ -169,7 +167,6 @@ public class Inimigo : MonoBehaviour
                 break;
         }
 
-        anim.SetBool("Atacando", false);
         atacando = false;
     }
 
@@ -231,8 +228,55 @@ public class Inimigo : MonoBehaviour
         col.enabled = false;
 
         anim.SetBool("Vivo", vivo);
+
+        AudioManager.Instance.Play("Morte");
+
         EfeitoDePiscar();
 
         Destroy(gameObject, 3f);
+    }
+
+    public void TocarAttack()
+    {
+        AudioManager.Instance.Play("Attack");
+    }
+
+    public void AplicarDanoNoPlayer()
+    {
+        if (!playerNoAlcance) return; // evita dano fantasma
+
+        SistemaDeVida vida = player.GetComponent<SistemaDeVida>();
+
+        if (vida != null)
+        {
+            vida.AplicarDano(danoAtaque);
+            AudioManager.Instance.Play("Dano");
+        }
+    }
+    [SerializeField] private GameObject HitboxAtaqueInimigo;
+    public void AtivarHitbox()
+    {
+        HitboxAtaqueInimigo.SetActive(true);
+    }
+    public void DesativarHitbox()
+    {
+        HitboxAtaqueInimigo.SetActive(false);
+    }
+
+    private void MirrorChildren()
+    {
+        foreach (var child in transform.GetComponentsInChildren<Transform>())
+        {
+            if (child == transform) continue;
+
+            Quaternion newRotation = Quaternion.identity;
+
+            if (spriteRenderer.flipX)
+            {
+                newRotation = Quaternion.Euler(0f, 180f, 0f);
+            }
+            
+            child.rotation = newRotation;
+        }
     }
 }

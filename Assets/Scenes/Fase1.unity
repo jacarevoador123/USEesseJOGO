@@ -706,6 +706,78 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &871555262
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 871555263}
+  - component: {fileID: 871555265}
+  - component: {fileID: 871555264}
+  m_Layer: 0
+  m_Name: HitboxAtaqueInimigo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &871555263
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871555262}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1362672419}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &871555264
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871555262}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.28721756, y: 0.0033358932}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.26746523, y: 0.37285572}
+  m_EdgeRadius: 0
+--- !u!114 &871555265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871555262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d59249a1adcd9409ee0e2b15ad313b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dano: 10
 --- !u!4 &1113190209 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7908615013346232240, guid: 4d33dfc56abe2fb4b80d1379da150c6f, type: 3}
@@ -1577,6 +1649,7 @@ MonoBehaviour:
   danoAtaque: 10
   tempoEntreAtaques: 2
   movingRight: 0
+  HitboxAtaqueInimigo: {fileID: 871555262}
 --- !u!50 &1362672415
 Rigidbody2D:
   serializedVersion: 4
@@ -1597,7 +1670,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &1362672416
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1705,11 +1778,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1362672412}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.86, y: -2.92, z: 0.009717202}
+  m_LocalPosition: {x: -1, y: -2.9, z: 0.009717202}
   m_LocalScale: {x: 3.788884, y: 4.315281, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 288079316}
+  - {fileID: 871555263}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4160,11 +4234,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1314657335797631141, guid: 275d5dcd6f64b3a45a60c2eb53893847, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.9
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 1314657335797631141, guid: 275d5dcd6f64b3a45a60c2eb53893847, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.77
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 1314657335797631141, guid: 275d5dcd6f64b3a45a60c2eb53893847, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4429,7 +4503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
       propertyPath: audios.Array.size
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
       propertyPath: audios.Array.data[0].clip
@@ -4500,6 +4574,22 @@ PrefabInstance:
       value: DanoInimigo
       objectReference: {fileID: 0}
     - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[7].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: e742b89229066c542a40bf74bfed4629, type: 3}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[7].name
+      value: GritoDeGuerra
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[8].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 8f14ba2ad0dbed54dba672446b4a8016, type: 3}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[8].name
+      value: Morte
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
       propertyPath: audios.Array.data[0].pitch
       value: 1
       objectReference: {fileID: 0}
@@ -4512,6 +4602,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[7].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[8].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
       propertyPath: audios.Array.data[0].volume
       value: 0.5
       objectReference: {fileID: 0}
@@ -4521,6 +4619,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
       propertyPath: audios.Array.data[6].volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[7].volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816547961933989783, guid: dcb4ebec80cd3b9458ad8c1a657d70dd, type: 3}
+      propertyPath: audios.Array.data[8].volume
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
