@@ -157,7 +157,9 @@ public class Inimigo : MonoBehaviour
 
             if (playerNoAlcance)
             {
+                //Travar o rigidbody em X enquanto ele tá atacando]
                 anim.SetTrigger("Ataque");
+                //colocar uma segunda opção de grito pelo amor de deus
                 AudioManager.Instance.Play("GritoDeGuerra");
             }
 
@@ -167,6 +169,7 @@ public class Inimigo : MonoBehaviour
                 break;
         }
 
+        //destrava o rigidbody em x
         atacando = false;
     }
 
@@ -238,6 +241,7 @@ public class Inimigo : MonoBehaviour
 
     public void TocarAttack()
     {
+        //colocar mais um som aqui ou um random pq tá deixando maluco
         AudioManager.Instance.Play("Attack");
     }
 

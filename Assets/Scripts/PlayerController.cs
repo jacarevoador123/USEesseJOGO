@@ -192,8 +192,9 @@ public class PlayerController : MonoBehaviour
     
     void Shoot()
     {
-        if (Input.GetButtonDown("Fire1") && lastShootTime < Time.time)
+        if (Input.GetButtonDown("Fire2") && lastShootTime < Time.time)
         {
+            anim.SetTrigger("adaga");
             Vector3 position = shootPosition.position;
             Quaternion rotation = fireballPrefab.transform.rotation;
             if (spriteRenderer.flipX)
@@ -216,7 +217,7 @@ public class PlayerController : MonoBehaviour
 
     void Attack()
     {
-    if (Input.GetKeyDown(KeyCode.F) && Time.time >= lastAttackTime)
+    if (Input.GetButtonDown("Fire1") && Time.time >= lastAttackTime)
     {
         if (pState.dashing) return; // opcional, evita atacar durante dash
 
