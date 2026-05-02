@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class Inimigo : MonoBehaviour
 {
+    [Header("Patrulha")]
+    public Transform pontoA;
+    public Transform pontoB;
+    public float toleranciaPonto = 0.2f;
+    
+    private Transform alvoPatrulha;
+
     [Header("Configurações")]
     public float moveSpeed = 2f;
     public float chaseSpeed = 3.5f;
@@ -42,6 +49,8 @@ public class Inimigo : MonoBehaviour
 
         GameObject p = GameObject.FindWithTag("Player");
         if (p != null) player = p.transform;
+
+        alvoPatrulha = pontoA; // começa indo pro ponto A
     }
 
     void Update()
@@ -52,9 +61,13 @@ public class Inimigo : MonoBehaviour
         DetectarPlayer();
 
         if (vendoPlayer)
+        {
             PerseguirPlayer();
+        }
         else
+        {
             Move();
+        }
     }
 
     // -----------------------------------
@@ -90,13 +103,33 @@ public class Inimigo : MonoBehaviour
     // -----------------------------------
     void Move()
     {
-        float direction = movingRight ? 1f : -1f;
-        rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
+        if (pontoA == null || pontoB == null) return;
 
-        spriteRenderer.flipX = movingRight == false;
+        Vector2 pos = transform.position;
+        float destinoX = alvoPatrulha.position.x;
+
+        // move só no eixo X
+        float novoX = Mathf.MoveTowards(pos.x, destinoX, moveSpeed * Time.deltaTime);
+
+        transform.position = new Vector2(novoX, pos.y);
+
+        float direction = destinoX - pos.x;
+
+        if (Mathf.Abs(direction) > 0.05f)
+            movingRight = direction > 0;
+
+        spriteRenderer.flipX = !movingRight;
         MirrorChildren();
 
-        anim.SetFloat("Velocidade", Mathf.Abs(rb.velocity.x));
+        anim.SetFloat("Velocidade", Mathf.Abs(direction));
+
+        // chegou no ponto (considera só X)
+        if (Mathf.Abs(transform.position.x - destinoX) < toleranciaPonto)
+        {
+            transform.position = new Vector2(destinoX, transform.position.y);
+
+            alvoPatrulha = (alvoPatrulha == pontoA) ? pontoB : pontoA;
+        }
     }
 
     private void SetDirecaoInicial()
@@ -105,7 +138,7 @@ public class Inimigo : MonoBehaviour
         spriteRenderer.flipX = movingRight == false;
         MirrorChildren();
 
-        rb.velocity = new Vector2(initialDir * moveSpeed, rb.velocity.y);
+        rb.velocity = Vector2.zero;
     }
 
     // ========================================================

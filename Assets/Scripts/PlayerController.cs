@@ -6,6 +6,8 @@ using Color = UnityEngine.Color;
 
 public class PlayerController : MonoBehaviour
 {
+    private bool isAttacking = false;
+
     [Header("Horizontal Movement Settings")]
     public float walkSpeed = 5f;
     [Space(5)]
@@ -98,10 +100,15 @@ public class PlayerController : MonoBehaviour
         if (pState.dashing) return;
 
         Flip();
-        Move();
-        Jump();
-        Shoot();
-        Attack();
+
+        if (!isAttacking)
+        {
+            Move();
+            Jump();
+            Shoot();
+            Attack();
+        }
+        
         StartDash();
         PauseGame();
         VerificarUpgrades();
@@ -187,45 +194,63 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector2(xAxis * walkSpeed, rb.velocity.y);
         anim.SetBool("Walking", IsMoving());
-
     }
     
     void Shoot()
     {
-        if (Input.GetButtonDown("Fire2") && lastShootTime < Time.time)
+        if (Input.GetButtonDown("Fire2") && lastShootTime < Time.time && !isAttacking)
         {
+            isAttacking = true;
+            rb.velocity = Vector2.zero;
             anim.SetTrigger("adaga");
-            Vector3 position = shootPosition.position;
-            Quaternion rotation = fireballPrefab.transform.rotation;
-            if (spriteRenderer.flipX)
-            {
-                //position.y = shootPosition.position.y * -1;
-                rotation.eulerAngles = new Vector3(0, 180, 0);
-            }
-            else
-            {
-                //position.y = shootPosition.position.y * 1;
-                rotation.eulerAngles = new Vector3(0, 0, 0);
-            }
 
+            // termina o ataque normal
+            Invoke(nameof(EndAttack), 0.7f);
 
-            Instantiate(fireballPrefab, position, rotation);
-            AudioManager.Instance.Play("Fireball");
+            // ATRASA o disparo
+            Invoke(nameof(SpawnFireball), 0.25f);
+
             lastShootTime = Time.time + shootCooldown;
         }
     }
 
+    void SpawnFireball()
+    {
+        Vector3 position = shootPosition.position;
+        Quaternion rotation = fireballPrefab.transform.rotation;
+
+        if (spriteRenderer.flipX)
+            {
+                rotation.eulerAngles = new Vector3(0, 180, 0);
+            }
+        else
+            {
+                rotation.eulerAngles = new Vector3(0, 0, 0);
+            }
+
+        Instantiate(fireballPrefab, position, rotation);
+        AudioManager.Instance.Play("Fireball");
+    }
+
+    public void EndAttack()
+    {
+        isAttacking = false;
+    }
+
     void Attack()
     {
-    if (Input.GetButtonDown("Fire1") && Time.time >= lastAttackTime)
-    {
-        if (pState.dashing) return; // opcional, evita atacar durante dash
+        if (Input.GetButtonDown("Fire1") && Time.time >= lastAttackTime)
+        {
+            if (pState.dashing) return; // opcional, evita atacar durante dash
 
-        lastAttackTime = Time.time + attackCooldown;
+            isAttacking = true;
+            rb.velocity = Vector2.zero;
+            lastAttackTime = Time.time + attackCooldown;
 
-        anim.SetTrigger("Attack");
-        AudioManager.Instance.Play("Attack");
-    }
+            anim.SetTrigger("Attack");
+            AudioManager.Instance.Play("Attack");
+            Invoke(nameof(EndAttack), 0.7f);
+        }
     }
 
 

@@ -1,34 +1,54 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Fireball : MonoBehaviour
 {
-    public float speed = 20f; // Velocidade da bala
-    public float lifetime = 2f; // Tempo de vida da bala antes de ser destruída
+    public float speed = 15f;
+    public float lifetime = 0.3f;
+    public int damage = 30;
 
     private void Start()
     {
-        // Destrói a bala após um certo tempo
+        // Destroi depois de um tempo
         Destroy(gameObject, lifetime);
     }
 
     private void Update()
     {
-        // Move a bala na direção em que ela está apontando
-        transform.Translate(speed * Time.deltaTime * Vector2.right);
+        // Move para frente (direita local)
+        transform.Translate(Vector2.right * speed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // Verifica se a colisão foi com um inimigo
-        if (other.CompareTag("Enemy"))
+        // ðŸ”´ IGNORA PLAYER (resolve o bug de spawn sumindo)
+        if (other.CompareTag("Player"))
+            return;
+
+        // ðŸŸ¡ Tenta aplicar dano padrÃ£o
+        var vida = other.GetComponent<SistemaDeVidaInimigo>();
+        if (vida != null)
         {
-            // Destrói o inimigo
-            Destroy(other.gameObject);
+            vida.AplicarDano(damage);
         }
 
-        // Destrói a bala
+        // ðŸ”µ DANO NO VOADOR (AGORA SIM)
+        var vidaVoador = other.GetComponent<SistemaDeVidaVoador>();
+        if (vidaVoador != null)
+        {
+            vidaVoador.AplicarDano(damage);
+        }
+
+        // ðŸ”µ Se for Voador, aplica efeitos extras
+        var voador = other.GetComponent<Voador>();
+        if (voador != null)
+        {
+            voador.Bird_EfeitoDeRecuo();
+            voador.Bird_EfeitoDePiscar();
+            voador.Bird_AnimacaoDeDano();
+        }
+
+        // ðŸŸ¢ Destroi a adaga ao colidir (com qualquer coisa que nÃ£o seja player)
         Destroy(gameObject);
     }
 }

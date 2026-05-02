@@ -19,5 +19,14 @@ public class AtaqueJogador : MonoBehaviour
 
             return;
         }
+
+        if (other.CompareTag("Voador"))
+        {
+            var vidaInimigo = other.GetComponent<SistemaDeVidaVoador>();
+            if (vidaInimigo != null)
+                vidaInimigo.AplicarDano(danoJogador);
+
+            return;
+        }
     }
 }
