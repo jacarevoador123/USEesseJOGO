@@ -6,6 +6,8 @@ using Color = UnityEngine.Color;
 
 public class PlayerController : MonoBehaviour
 {
+    private bool isWalkingSoundPlaying = false;
+
     private bool isAttacking = false;
 
     [Header("Horizontal Movement Settings")]
@@ -193,7 +195,21 @@ public class PlayerController : MonoBehaviour
     void Move()
     {
         rb.velocity = new Vector2(xAxis * walkSpeed, rb.velocity.y);
-        anim.SetBool("Walking", IsMoving());
+
+        bool moving = IsMoving();
+        anim.SetBool("Walking", moving);
+
+        // Controle do áudio de caminhada
+        if (moving && !isWalkingSoundPlaying)
+        {
+            AudioManager.Instance.Play("Walk");
+            isWalkingSoundPlaying = true;
+        }
+        else if (!moving && isWalkingSoundPlaying)
+        {
+            AudioManager.Instance.Stop("Walk");
+            isWalkingSoundPlaying = false;
+        }
     }
     
     void Shoot()
