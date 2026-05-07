@@ -110,7 +110,10 @@ public class PlayerController : MonoBehaviour
             Shoot();
             Attack();
         }
+
+        pState.walking = IsMoving();
         
+        PlayWalkingSound();
         StartDash();
         PauseGame();
         VerificarUpgrades();
@@ -194,22 +197,19 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        rb.velocity = new Vector2(xAxis * walkSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(xAxis * walkSpeed, rb.velocity.y);        
+        anim.SetBool("Walking", pState.walking);
+    }
 
-        bool moving = IsMoving();
-        anim.SetBool("Walking", moving);
-
-        // Controle do áudio de caminhada
-        if (moving && !isWalkingSoundPlaying)
-        {
+    void PlayWalkingSound(){
+        if(pState.walking && !isWalkingSoundPlaying){
             AudioManager.Instance.Play("Walk");
             isWalkingSoundPlaying = true;
-        }
-        else if (!moving && isWalkingSoundPlaying)
-        {
+        }else if (!pState.walking){
             AudioManager.Instance.Stop("Walk");
             isWalkingSoundPlaying = false;
         }
+        
     }
     
     void Shoot()
@@ -341,7 +341,7 @@ public class PlayerController : MonoBehaviour
 
     bool IsMoving()
     {
-        if (rb.velocity.x != 0 && IsGrounded())
+        if (rb.velocity.x != 0 && IsGrounded() && !isAttacking)
         {
             Flip();
             return true;
