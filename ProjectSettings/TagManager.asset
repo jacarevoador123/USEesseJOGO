@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Inimigo
   - AtaqueJogador
+  - Voador
+  - BOSS
   layers:
   - Default
   - TransparentFX
