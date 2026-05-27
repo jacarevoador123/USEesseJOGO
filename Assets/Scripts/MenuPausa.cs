@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuPausa : MonoBehaviour
 {
@@ -11,6 +12,13 @@ public class MenuPausa : MonoBehaviour
 
     public void Sair()
     {
-        Debug.Log("Sair do jogo");
+        Time.timeScale = 1;
+
+        if (HUDController.Instance != null)
+        {
+            HUDController.Instance.RetornarJogo();
+        }
+
+        SceneManager.LoadScene("Menu");
     }
 }

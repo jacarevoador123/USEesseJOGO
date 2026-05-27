@@ -5,10 +5,15 @@ public class BarraDeVida : MonoBehaviour
 {
     public Image vidaAtualImage;
 
-    public void AtualizarUI(float calculoVida)
-    {   
-        if(calculoVida >= 0)     {
-            vidaAtualImage.fillAmount = calculoVida;
-        }
+    public virtual void AtualizarUI(float calculoVida)
+    {
+        calculoVida = Mathf.Clamp01(calculoVida);
+
+        vidaAtualImage.fillAmount = calculoVida;
     }
+
+    public class BarraDeVidaInimigo : BarraDeVida
+{
+
+}
 }

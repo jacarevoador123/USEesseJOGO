@@ -39,13 +39,21 @@ public class BossAtaques : MonoBehaviour
     public float tempoVidaFumaca = 0.75f;
     public float distanciaSpawnFumaca = 1.4f;
     public float alturaSpawnFumaca = 0.2f;
-    public float atrasoPousoSmash = 0.55f;
+    public float atrasoSpawnFumaca = 0.15f;
+    public float atrasoInicioPuloSmash = 0.05f;
+    public float duracaoPuloSmash = 0.55f;
+    public float alturaPuloSmash = 2.5f;
     public float duracaoParticulaPouso = 1.2f;
     public float duracaoAtaqueSmash = 1.3f;
     public string animAtaqueSmash = "ataque_smash";
 
     [Header("Animacao de saida")]
     public string animParado = "parado";
+
+    private float gravidadeOriginal;
+    private bool gravidadeAlteradaNoSmash;
+
+    private BossVida bossVida;
 
     private BossState currentState = BossState.Patrol;
     private Rigidbody2D rb;
@@ -55,6 +63,7 @@ public class BossAtaques : MonoBehaviour
 
     private void Awake()
     {
+        bossVida = GetComponent<BossVida>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         patrulha = GetComponent<BossPatrulha>();
@@ -87,6 +96,8 @@ public class BossAtaques : MonoBehaviour
 
         rotinaAtual = null;
         currentState = BossState.Patrol;
+
+        RestaurarRigidbodyDepoisSmash();
 
         if (rb != null)
             rb.velocity = Vector2.zero;
@@ -144,16 +155,26 @@ public class BossAtaques : MonoBehaviour
     }
 
     private IEnumerator CorrotinaAtaqueSmash()
-    {
-        TocarAnimacao(animAtaqueSmash);
-        yield return new WaitForSeconds(atrasoPousoSmash);
+{
+    TocarAnimacao(animAtaqueSmash);
 
-        SpawnarParticulaPouso();
-        SpawnarFumacaSmash();
+    if (atrasoInicioPuloSmash > 0f)
+        yield return new WaitForSeconds(atrasoInicioPuloSmash);
 
-        yield return new WaitForSeconds(Mathf.Max(0f, duracaoAtaqueSmash - atrasoPousoSmash));
-        FinalizarAtaque();
-    }
+    yield return StartCoroutine(PularSmash());
+
+    SpawnarParticulaPouso();
+
+    if (atrasoSpawnFumaca > 0f)
+        yield return new WaitForSeconds(atrasoSpawnFumaca);
+
+    SpawnarFumacaSmash();
+
+    float tempoUsado = atrasoInicioPuloSmash + duracaoPuloSmash + Mathf.Max(0f, atrasoSpawnFumaca);
+    yield return new WaitForSeconds(Mathf.Max(0f, duracaoAtaqueSmash - tempoUsado));
+
+    FinalizarAtaque();
+}
 
     private void AcertarAtaqueCurto()
     {
@@ -226,15 +247,11 @@ public class BossAtaques : MonoBehaviour
     }
 
     private void FinalizarAtaque()
-    {
-        rotinaAtual = null;
-        currentState = BossState.Recover;
-
-        if (rb != null)
-            rb.velocity = Vector2.zero;
-
-        TocarAnimacao(animParado);
-    }
+{
+    rotinaAtual = null;
+    currentState = BossState.Recover;
+    ForcarAnimacaoParado();
+}
 
     private void TocarAnimacao(string nome)
     {
@@ -248,4 +265,87 @@ public class BossAtaques : MonoBehaviour
         Vector2 centro = pontoAtaqueCurto != null ? pontoAtaqueCurto.position : transform.position;
         Gizmos.DrawWireCube(centro, tamanhoAtaqueCurto);
     }
+
+    public void ForcarAnimacaoParado()
+{
+     if (bossVida != null && bossVida.EstaEmHit)
+        return;
+
+    if (rb != null)
+        rb.velocity = Vector2.zero;
+
+    if (anim == null || string.IsNullOrEmpty(animParado))
+        return;
+
+    AnimatorStateInfo state = anim.GetCurrentAnimatorStateInfo(0);
+
+    if (!state.IsName(animParado))
+        anim.Play(animParado, 0, 0f);
+}
+
+private IEnumerator PularSmash()
+{
+    float duracao = Mathf.Max(0.01f, duracaoPuloSmash);
+    Vector2 posicaoInicial = rb != null ? rb.position : (Vector2)transform.position;
+
+    PrepararRigidbodyParaSmash();
+
+    float tempo = 0f;
+
+    while (tempo < duracao)
+    {
+        float delta = rb != null ? Time.fixedDeltaTime : Time.deltaTime;
+        tempo += delta;
+
+        float progresso = Mathf.Clamp01(tempo / duracao);
+        float alturaAtual = Mathf.Sin(progresso * Mathf.PI) * alturaPuloSmash;
+
+        Vector2 novaPosicao = new Vector2(posicaoInicial.x, posicaoInicial.y + alturaAtual);
+
+        if (rb != null)
+        {
+            rb.MovePosition(novaPosicao);
+            yield return new WaitForFixedUpdate();
+        }
+        else
+        {
+            transform.position = novaPosicao;
+            yield return null;
+        }
+    }
+
+    if (rb != null)
+    {
+        rb.MovePosition(posicaoInicial);
+        yield return new WaitForFixedUpdate();
+    }
+    else
+    {
+        transform.position = posicaoInicial;
+    }
+
+    RestaurarRigidbodyDepoisSmash();
+}
+
+private void PrepararRigidbodyParaSmash()
+{
+    if (rb == null)
+        return;
+
+    gravidadeOriginal = rb.gravityScale;
+    gravidadeAlteradaNoSmash = true;
+
+    rb.velocity = Vector2.zero;
+    rb.gravityScale = 0f;
+}
+
+private void RestaurarRigidbodyDepoisSmash()
+{
+    if (rb == null || !gravidadeAlteradaNoSmash)
+        return;
+
+    rb.gravityScale = gravidadeOriginal;
+    rb.velocity = Vector2.zero;
+    gravidadeAlteradaNoSmash = false;
+}
 }

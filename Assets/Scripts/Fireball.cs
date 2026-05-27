@@ -21,11 +21,12 @@ public class Fireball : MonoBehaviour
         if (other.CompareTag("Player"))
             return;
 
-        BossVida vidaBoss = other.GetComponentInParent<BossVida>();
-        if (vidaBoss != null)
+        if (other.CompareTag("BOSS"))
         {
-            vidaBoss.AplicarDano(damage);
-            Destroy(gameObject);
+            var vidaInimigo = other.GetComponent<BossVida>();
+            if (vidaInimigo != null)
+                vidaInimigo.AplicarDano(damage);
+
             return;
         }
 

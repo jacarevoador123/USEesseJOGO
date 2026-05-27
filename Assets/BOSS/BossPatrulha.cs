@@ -16,12 +16,15 @@ public class BossPatrulha : MonoBehaviour
     public string animAndar = "andar";
     public string animParado = "parado";
 
+    private BossVida bossVida;
+
     private Transform alvoPatrulha;
     private Rigidbody2D rb;
     private Animator anim;
 
     private void Awake()
     {
+        bossVida = GetComponent<BossVida>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         alvoPatrulha = pontoB;
@@ -52,17 +55,17 @@ public class BossPatrulha : MonoBehaviour
     }
 
     public void MoverEmDirecao(Vector2 destino, float pararQuandoChegarNaDistancia)
+{
+    float diferencaX = destino.x - transform.position.x;
+
+    if (Mathf.Abs(diferencaX) <= pararQuandoChegarNaDistancia)
     {
-        float distancia = Vector2.Distance(transform.position, destino);
-
-        if (distancia <= pararQuandoChegarNaDistancia)
-        {
-            Parar();
-            return;
-        }
-
-        MoverHorizontal(Mathf.Sign(destino.x - transform.position.x), velocidadePerseguicao);
+        Parar();
+        return;
     }
+
+    MoverHorizontal(diferencaX > 0f ? 1f : -1f, velocidadePerseguicao);
+}
 
     public void VirarPara(Transform alvo)
     {
@@ -115,6 +118,8 @@ public class BossPatrulha : MonoBehaviour
 
     private void TocarAnimacao(string nome)
     {
+        if (bossVida != null && bossVida.EstaEmHit)
+            return;
         if (anim == null || string.IsNullOrEmpty(nome))
             return;
 

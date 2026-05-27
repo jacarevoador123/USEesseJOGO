@@ -11,10 +11,6 @@ GameObject:
   - component: {fileID: 1319691525369347353}
   - component: {fileID: 1319691525369347354}
   - component: {fileID: 1319691525369347355}
-  - component: {fileID: -404650448284780865}
-  - component: {fileID: 8431775957583159436}
-  - component: {fileID: -3490666601345540546}
-  - component: {fileID: 4439988475801154797}
   - component: {fileID: 31887743622872338}
   - component: {fileID: 468834911132505712}
   - component: {fileID: 3092987033558989811}
@@ -23,7 +19,7 @@ GameObject:
   - component: {fileID: 1115700630254840986}
   m_Layer: 0
   m_Name: BOSS
-  m_TagString: Untagged
+  m_TagString: BOSS
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,7 +88,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.7, y: 3.3}
+  m_Size: {x: 1.55, y: 2.7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -119,124 +115,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-404650448284780865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1319691525369347356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa992ee53e42314409239ec25f9902ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  metodoDanoPlayer: AplicarDano
-  danoCurto: 20
-  pontoAtaqueCurto: {fileID: 0}
-  tamanhoAtaqueCurto: {x: 2, y: 1.4}
-  atrasoPrimeiroCorte: 0.18
-  intervaloEntreCortes: 0.22
-  quantidadeCortes: 3
-  duracaoAtaqueCurto: 0.9
-  animAtaqueCurto: ataque_curto
-  espadaPrefab: {fileID: 0}
-  pontoSpawnEspada: {fileID: 0}
-  danoEspada: 30
-  velocidadeEspada: 15
-  tempoVidaEspada: 0.35
-  atrasoSpawnEspada: 0.28
-  duracaoAtaqueLongo: 0.8
-  espadaMiraComAltura: 1
-  animAtaqueLongo: ataque_longo
-  fumacaVermelhaPrefab: {fileID: 0}
-  particulaPousoPrefab: {fileID: 0}
-  pontoPouso: {fileID: 0}
-  danoSmashProjetil: 35
-  velocidadeFumaca: 9
-  tempoVidaFumaca: 0.75
-  distanciaSpawnFumaca: 1.4
-  alturaSpawnFumaca: 0.2
-  atrasoPousoSmash: 0.55
-  duracaoParticulaPouso: 1.2
-  duracaoAtaqueSmash: 1.3
-  animAtaqueSmash: ataque_smash
---- !u!114 &8431775957583159436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1319691525369347356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69df6b8187d2b2f4aa536d882431aa91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  distanciaVerPlayer: 12
-  distanciaPerderPlayer: 16
-  precisaLinhaDeVisao: 0
-  camadasBloqueiamVisao:
-    serializedVersion: 2
-    m_Bits: 0
-  primeiroAtaqueDelay: 0.4
-  cooldownEntreAtaques: 1.2
-  tempoReavaliarSemAtaque: 0.25
-  cooldownCurto: 1.4
-  cooldownLongo: 2.2
-  cooldownSmash: 3.5
-  fase1CurtoMax: 2
-  fase1LongoMin: 2
-  fase1LongoMax: 12
-  fase2CurtoMax: 1
-  fase2SmashMin: 2
-  fase2SmashMax: 6
-  fase2LongoMin: 7
-  fase2LongoMax: 12
-  distanciaPararPerseguicao: 1.1
---- !u!114 &-3490666601345540546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1319691525369347356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50bf646bd26dbb94e8b7a38a4d48c5e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pontoA: {fileID: 0}
-  pontoB: {fileID: 0}
-  velocidadePatrulha: 2
-  velocidadePerseguicao: 3
-  distanciaChegada: 0.2
-  spriteOlhaParaDireita: 1
-  animAndar: andar
-  animParado: parado
---- !u!114 &4439988475801154797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1319691525369347356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 215b21b66194e62409754f8f62cbe1e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vidaMaxima: 3000
-  vidaAtual: 3000
-  porcentagemFase2: 0.5
-  animHit: boss_hit
-  animMorte: boss_morte
-  tocarHitAoTomarDano: 1
 --- !u!61 &31887743622872338
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -255,7 +133,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
     oldSize: {x: 1.55, y: 2.7}
-    newSize: {x: 1.7, y: 3.3}
+    newSize: {x: 1.55, y: 2.7}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -283,7 +161,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &3092987033558989811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,37 +177,41 @@ MonoBehaviour:
   player: {fileID: 0}
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   metodoDanoPlayer: AplicarDano
-  danoCurto: 20
-  pontoAtaqueCurto: {fileID: 0}
-  tamanhoAtaqueCurto: {x: 2, y: 1.4}
-  atrasoPrimeiroCorte: 0.18
-  intervaloEntreCortes: 0.22
+  danoCurto: 3
+  pontoAtaqueCurto: {fileID: 1910000459596751034}
+  tamanhoAtaqueCurto: {x: 2.63, y: 1.4}
+  atrasoPrimeiroCorte: 1.2
+  intervaloEntreCortes: 0.5
   quantidadeCortes: 3
-  duracaoAtaqueCurto: 0.9
+  duracaoAtaqueCurto: 3.2
   animAtaqueCurto: ataque_curto
-  espadaPrefab: {fileID: 0}
-  pontoSpawnEspada: {fileID: 0}
-  danoEspada: 30
+  espadaPrefab: {fileID: 777215490714587679, guid: 9d978845c4643ea4abdb31564f77ccbc, type: 3}
+  pontoSpawnEspada: {fileID: 7697877463127623081}
+  danoEspada: 7
   velocidadeEspada: 15
-  tempoVidaEspada: 0.35
-  atrasoSpawnEspada: 0.28
-  duracaoAtaqueLongo: 0.8
+  tempoVidaEspada: 2
+  atrasoSpawnEspada: 1.4
+  duracaoAtaqueLongo: 2.5
   espadaMiraComAltura: 1
   animAtaqueLongo: ataque_longo
-  fumacaVermelhaPrefab: {fileID: 0}
-  particulaPousoPrefab: {fileID: 0}
-  pontoPouso: {fileID: 0}
-  danoSmashProjetil: 35
-  velocidadeFumaca: 9
-  tempoVidaFumaca: 0.75
-  distanciaSpawnFumaca: 1.4
-  alturaSpawnFumaca: 0.2
-  atrasoPousoSmash: 0.55
-  duracaoParticulaPouso: 1.2
-  duracaoAtaqueSmash: 1.3
+  fumacaVermelhaPrefab: {fileID: 9085296303827728279, guid: cedecb17c9487184e8ac62e92bf36be3, type: 3}
+  particulaPousoPrefab: {fileID: 1157010416493520944, guid: c783548525de75448ad0db5d3db7f975, type: 3}
+  pontoPouso: {fileID: 9208209624773020161}
+  danoSmashProjetil: 15
+  velocidadeFumaca: 4
+  tempoVidaFumaca: 1
+  distanciaSpawnFumaca: 3
+  alturaSpawnFumaca: 0
+  atrasoSpawnFumaca: 0.2
+  atrasoInicioPuloSmash: 0
+  duracaoPuloSmash: 1.5
+  alturaPuloSmash: 2.5
+  duracaoParticulaPouso: 0.2
+  duracaoAtaqueSmash: 4
   animAtaqueSmash: ataque_smash
+  animParado: parado
 --- !u!114 &6715118534796464186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,27 +225,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  distanciaVerPlayer: 12
-  distanciaPerderPlayer: 16
-  precisaLinhaDeVisao: 0
+  distanciaVerPlayer: 16
+  distanciaPerderPlayer: 18
+  precisaLinhaDeVisao: 1
   camadasBloqueiamVisao:
     serializedVersion: 2
-    m_Bits: 0
-  primeiroAtaqueDelay: 0.4
-  cooldownEntreAtaques: 1.2
-  tempoReavaliarSemAtaque: 0.25
-  cooldownCurto: 1.4
-  cooldownLongo: 2.2
-  cooldownSmash: 3.5
-  fase1CurtoMax: 2
-  fase1LongoMin: 2
-  fase1LongoMax: 12
-  fase2CurtoMax: 1
-  fase2SmashMin: 2
-  fase2SmashMax: 6
-  fase2LongoMin: 7
-  fase2LongoMax: 12
-  distanciaPararPerseguicao: 1.1
+    m_Bits: 64
+  primeiroAtaqueDelay: 4
+  tempoParadoDepoisAtaque: 2
+  cooldownEntreAtaques: 7
+  fase1CurtoMax: 3
+  fase1LongoMin: 4
+  fase1LongoMax: 16
+  fase2CurtoMax: 2
+  fase2SmashMin: 3
+  fase2SmashMax: 10
+  fase2LongoMin: 11
+  fase2LongoMax: 16
+  distanciaPararPerseguicao: 2
 --- !u!114 &7129379603066714359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pontoA: {fileID: 0}
   pontoB: {fileID: 0}
-  velocidadePatrulha: 2
+  velocidadePatrulha: 0.7
   velocidadePerseguicao: 3
   distanciaChegada: 0.2
   spriteOlhaParaDireita: 1
@@ -396,12 +275,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 215b21b66194e62409754f8f62cbe1e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duracaoAnimHit: 1
   vidaMaxima: 3000
   vidaAtual: 3000
   porcentagemFase2: 0.5
   animHit: boss_hit
   animMorte: boss_morte
   tocarHitAoTomarDano: 1
+  mudarCorNaFase2: 1
+  corFase2: {r: 1, g: 0.231, b: 0, a: 1}
 --- !u!1 &1519401464206678553
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +308,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1519401464206678553}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.52, y: 0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -457,7 +339,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4122004012154583134}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.49, y: 1.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -488,7 +370,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8611034111718142664}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.82, y: 1.48, z: 0}
+  m_LocalPosition: {x: 0.55, y: 1.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 9085296303827728276}
   - component: {fileID: 9085296303827728277}
   - component: {fileID: 9085296303827728278}
-  - component: {fileID: 5496372841198880091}
+  - component: {fileID: 7257408972397432498}
+  - component: {fileID: 6865560368277261146}
   m_Layer: 0
   m_Name: Efeitos espada FASE2
   m_TagString: Untagged
@@ -26,14 +27,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9085296303827728279}
-  m_LocalRotation: {x: 0.04249276, y: 0.21229747, z: -0.13765924, w: 0.9665268}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -119.4, y: 26.3, z: -0.049173176}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 8.082, y: 23.746, z: -14.51}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9085296303827728277
 Animator:
   serializedVersion: 5
@@ -101,13 +102,29 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.016, y: 0.008}
+  m_Size: {x: 5, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5496372841198880091
+--- !u!70 &7257408972397432498
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9085296303827728279}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.3830452, y: 3.6006374}
+  m_Size: {x: 7.7625656, y: 8.201275}
+  m_Direction: 0
+--- !u!114 &6865560368277261146
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,15 +133,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 9085296303827728279}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd68163051b7b6d48a8d72d96e9827b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e5ce1fef0cf82942a80685f581d25b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   velocidade: 15
   tempoDeVida: 0.35
-  dano: 30
+  dano: 15
   metodoDanoPlayer: AplicarDano
-  destruirAoAcertarPlayer: 1
-  destruirAoBaterEmCenario: 1
   camadasCenario:
     serializedVersion: 2
     m_Bits: 0

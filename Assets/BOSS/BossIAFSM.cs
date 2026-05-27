@@ -13,12 +13,9 @@ public class BossIAFSM : MonoBehaviour
 
     [Header("Cooldown geral")]
     public float primeiroAtaqueDelay = 0.4f;
-    public float cooldownEntreAtaques = 1.2f;
+    public float tempoParadoDepoisAtaque = 4f;
+    public float cooldownEntreAtaques = 10f;
 
-    [Header("Cooldown por ataque")]
-    public float cooldownCurto = 1.4f;
-    public float cooldownLongo = 2.2f;
-    public float cooldownSmash = 3.5f;
 
     [Header("Fase 1 - distancias")]
     public float fase1CurtoMax = 2f;
@@ -34,9 +31,10 @@ public class BossIAFSM : MonoBehaviour
 
     [Header("Comportamento")]
     public float distanciaPararPerseguicao = 0.8f;
-    public bool perseguirDuranteCooldown = true;
-    public bool aproximarAntesDeAtacar = true;
-    public float distanciaMaximaParaIniciarAtaque = 7f;
+
+    private Rigidbody2D rb;
+    private bool recuperandoDepoisDeAtaque;
+    private bool paradoDepoisDeAtaque;
 
     private BossState currentState = BossState.Patrol;
     private BossAtaques bossAtaques;
@@ -44,13 +42,11 @@ public class BossIAFSM : MonoBehaviour
     private BossVida bossVida;
 
     private float stateTimer;
-    private float proximoCurto;
-    private float proximoLongo;
-    private float proximoSmash;
     private bool playerFoiVisto;
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
         bossAtaques = GetComponent<BossAtaques>();
         bossPatrulha = GetComponent<BossPatrulha>();
         bossVida = GetComponent<BossVida>();
@@ -144,26 +140,56 @@ public class BossIAFSM : MonoBehaviour
     }
 
     private void RecoverState()
+{
+    if (recuperandoDepoisDeAtaque)
     {
-        if (!PodeContinuarVendoPlayer())
+        if (paradoDepoisDeAtaque)
         {
-            currentState = BossState.Patrol;
+            PararBoss();
+
+            if (bossAtaques != null)
+                bossAtaques.ForcarAnimacaoParado();
+
+            stateTimer -= Time.deltaTime;
+
+            if (stateTimer <= 0f)
+            {
+                paradoDepoisDeAtaque = false;
+                stateTimer = cooldownEntreAtaques;
+            }
+
             return;
         }
 
+        if (PodeContinuarVendoPlayer())
+            PerseguirPlayer();
+        else if (bossPatrulha != null)
+            bossPatrulha.Patrulhar(true);
+
         stateTimer -= Time.deltaTime;
 
-        if (perseguirDuranteCooldown)
-            MoverOuPararConformeDistancia();
-        else if (bossPatrulha != null)
+        if (stateTimer <= 0f)
         {
-            bossPatrulha.Parar();
-            bossPatrulha.VirarPara(player);
+            recuperandoDepoisDeAtaque = false;
+            currentState = PodeContinuarVendoPlayer() ? BossState.ChooseAttack : BossState.Patrol;
         }
 
-        if (stateTimer <= 0f)
-            currentState = BossState.ChooseAttack;
+        return;
     }
+
+    if (!PodeContinuarVendoPlayer())
+    {
+        currentState = BossState.Patrol;
+        return;
+    }
+
+    PararBoss();
+
+    stateTimer -= Time.deltaTime;
+
+    if (stateTimer <= 0f)
+        currentState = BossState.ChooseAttack;
+}
 
     private void ChooseAttackState()
     {
@@ -191,13 +217,21 @@ public class BossIAFSM : MonoBehaviour
     }
 
     private void AttackState()
-    {
-        if (bossAtaques == null || bossAtaques.GetState() != BossState.Attacking)
-        {
-            stateTimer = cooldownEntreAtaques;
-            currentState = BossState.Recover;
-        }
-    }
+{
+    if (bossAtaques != null && bossAtaques.GetState() == BossState.Attacking)
+        return;
+
+    recuperandoDepoisDeAtaque = true;
+    paradoDepoisDeAtaque = true;
+    stateTimer = tempoParadoDepoisAtaque;
+
+    PararBoss();
+
+    if (bossAtaques != null)
+        bossAtaques.ForcarAnimacaoParado();
+
+    currentState = BossState.Recover;
+}
 
     private void MoverOuPararConformeDistancia()
     {
@@ -224,84 +258,56 @@ public class BossIAFSM : MonoBehaviour
     }
 
     private BossAttackType EscolherAtaque()
+{
+    if (player == null)
+        return BossAttackType.None;
+
+    float distancia = Vector2.Distance(transform.position, player.position);
+    bool fase2 = bossVida != null && bossVida.EstaNaFase2;
+
+    if (!fase2)
     {
-        if (player == null)
-            return BossAttackType.None;
-
-        float distancia = Vector2.Distance(transform.position, player.position);
-        bool fase2 = bossVida != null && bossVida.EstaNaFase2;
-
-        if (DeveAproximarAntesDeAtacar(distancia))
-            return BossAttackType.None;
-
-        if (!fase2)
-        {
-            if (distancia <= fase1CurtoMax && AtaqueDisponivel(BossAttackType.Curto))
-                return BossAttackType.Curto;
-
-            if (distancia >= fase1LongoMin && distancia <= fase1LongoMax && AtaqueDisponivel(BossAttackType.Longo))
-                return BossAttackType.Longo;
-
-            return BossAttackType.None;
-        }
-
-        if (distancia <= fase2CurtoMax && AtaqueDisponivel(BossAttackType.Curto))
+        if (distancia <= fase1CurtoMax)
             return BossAttackType.Curto;
 
-        if (distancia >= fase2SmashMin && distancia <= fase2SmashMax && AtaqueDisponivel(BossAttackType.Smash))
-            return BossAttackType.Smash;
-
-        if (distancia >= fase2LongoMin && distancia <= fase2LongoMax && AtaqueDisponivel(BossAttackType.Longo))
+        if (distancia >= fase1LongoMin && distancia <= fase1LongoMax)
             return BossAttackType.Longo;
 
         return BossAttackType.None;
     }
 
-    private bool AtaqueDisponivel(BossAttackType ataque)
-    {
-        float agora = Time.time;
+    if (distancia <= fase2CurtoMax)
+        return BossAttackType.Curto;
 
-        switch (ataque)
-        {
-            case BossAttackType.Curto:
-                return agora >= proximoCurto;
-            case BossAttackType.Longo:
-                return agora >= proximoLongo;
-            case BossAttackType.Smash:
-                return agora >= proximoSmash;
-            default:
-                return false;
-        }
-    }
+    if (distancia >= fase2SmashMin && distancia <= fase2SmashMax)
+        return BossAttackType.Smash;
 
-    private bool DeveAproximarAntesDeAtacar(float distancia)
-    {
-        return aproximarAntesDeAtacar && distancia > distanciaMaximaParaIniciarAtaque;
-    }
+    if (distancia >= fase2LongoMin && distancia <= fase2LongoMax)
+        return BossAttackType.Longo;
+
+    return BossAttackType.None;
+}
 
     private void ExecutarAtaque(BossAttackType ataque)
+{
+    if (bossAtaques == null)
+        return;
+
+    switch (ataque)
     {
-        if (bossAtaques == null)
-            return;
+        case BossAttackType.Curto:
+            bossAtaques.Attack_Curto();
+            break;
 
-        switch (ataque)
-        {
-            case BossAttackType.Curto:
-                proximoCurto = Time.time + cooldownCurto;
-                bossAtaques.Attack_Curto();
-                break;
+        case BossAttackType.Longo:
+            bossAtaques.Attack_Longo();
+            break;
 
-            case BossAttackType.Longo:
-                proximoLongo = Time.time + cooldownLongo;
-                bossAtaques.Attack_Longo();
-                break;
-
-            case BossAttackType.Smash:
-                proximoSmash = Time.time + cooldownSmash;
-                bossAtaques.Attack_Smash();
-                break;
-        }
+        case BossAttackType.Smash:
+            bossAtaques.Attack_Smash();
+            break;
     }
+}
 
     private bool PodeVerPlayer()
     {
@@ -335,4 +341,17 @@ public class BossIAFSM : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(origem, direcao, distancia, camadasBloqueiamVisao);
         return hit.collider == null;
     }
+
+   private void PararBoss()
+{
+    if (bossPatrulha != null)
+    {
+        bossPatrulha.Parar();
+        bossPatrulha.VirarPara(player);
+        return;
+    }
+
+    if (rb != null)
+        rb.velocity = Vector2.zero;
+}
 }

@@ -1,12 +1,18 @@
+using UnityEngine;
+
 public class SistemaDeVidaInimigo : SistemaDeVida
 {
-    Inimigo inimigo;
-    BarraDeVidaInimigo barraDeVidaInimigo;
+    private Inimigo inimigo;
+    private BarraDeVidaInimigo barraDeVidaInimigo;
+
     new void Start()
     {
         base.Start();
+
         inimigo = GetComponent<Inimigo>();
         barraDeVidaInimigo = GetComponentInChildren<BarraDeVidaInimigo>();
+
+        AtualizarVida();
     }
 
     public override void AplicarDano(float dano)
@@ -15,23 +21,28 @@ public class SistemaDeVidaInimigo : SistemaDeVida
 
         AudioManager.Instance.Play("DanoInimigo");
 
+        inimigo.AnimacaoDeDano();
+        inimigo.EfeitoDePiscar();
+        inimigo.EfeitoDeRecuo();
+
+        AtualizarVida();
+
         if (vidaAtual <= 0)
         {
             Morrer();
         }
-
-        inimigo.AnimacaoDeDano();
-        inimigo.EfeitoDePiscar();
-        inimigo.EfeitoDeRecuo();
-        AtualizarVida();
     }
 
-    override protected void Morrer()
+    protected override void Morrer()
     {
         inimigo.AnimacaoDeMorte();
     }
+
     void AtualizarVida()
     {
-        barraDeVidaInimigo.AtualizarUI(vidaAtual / vidaMaxima);
+        if (barraDeVidaInimigo != null)
+        {
+            barraDeVidaInimigo.AtualizarUI(vidaAtual / vidaMaxima);
+        }
     }
 }

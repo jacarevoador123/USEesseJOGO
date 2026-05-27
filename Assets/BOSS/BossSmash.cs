@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BossProjetil : MonoBehaviour
+public class BossSmash : MonoBehaviour
 {
     [Header("Movimento")]
     public float velocidade = 15f;
@@ -9,8 +9,6 @@ public class BossProjetil : MonoBehaviour
     [Header("Dano")]
     public int dano = 30;
     public string metodoDanoPlayer = "AplicarDano";
-    public bool destruirAoAcertarPlayer = true;
-    public bool destruirAoBaterEmCenario = true;
     public LayerMask camadasCenario;
 
     private Rigidbody2D rb;
@@ -65,22 +63,13 @@ public class BossProjetil : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other)
+{
+    if (dono != null && other.transform.root == dono.root)
+        return;
+
+    if (other.CompareTag("Player"))
     {
-        if (dono != null && other.transform.root == dono.root)
-            return;
-
-        if (other.CompareTag("Player"))
-        {
-            other.SendMessage(metodoDanoPlayer, dano, SendMessageOptions.DontRequireReceiver);
-
-            if (destruirAoAcertarPlayer)
-                Destroy(gameObject);
-
-            return;
-        }
-
-        bool bateuNoCenario = camadasCenario.value != 0 && (camadasCenario.value & (1 << other.gameObject.layer)) != 0;
-        if (destruirAoBaterEmCenario && bateuNoCenario)
-            Destroy(gameObject);
+        other.SendMessage(metodoDanoPlayer, dano, SendMessageOptions.DontRequireReceiver);
     }
+}
 }
