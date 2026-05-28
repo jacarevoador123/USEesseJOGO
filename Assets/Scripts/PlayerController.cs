@@ -20,8 +20,7 @@ public class PlayerController : MonoBehaviour
     private int jumpBufferCounter = 0;
     private float coyoteTimeCounter = 0;
     public float coyoteTime = 0.1f;
-    private int airJumpCounter = 0;
-    [SerializeField] int maxAirJumps = 0;
+
 
     [Space(5)]
     [Header("Ground Check Settings")]
@@ -29,6 +28,12 @@ public class PlayerController : MonoBehaviour
     public float groundCheckX = 0.2f;
     public Transform groundCheckPoint;
     public LayerMask groundMask;
+
+    [Header("Physics Materials")]
+    public PhysicsMaterial2D materialSemFriccao;
+    public PhysicsMaterial2D materialAltaFriccao;
+
+    private Collider2D col;
 
     [Space(5)]
     [Header("Dash Settings")]
@@ -117,6 +122,7 @@ public class PlayerController : MonoBehaviour
         StartDash();
         PauseGame();
         VerificarUpgrades();
+        UpdateFrictionMaterial();
         
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -169,31 +175,24 @@ public class PlayerController : MonoBehaviour
     }
 
     void Jump()
+{
+    // Permite ao jogador parar o pulo no meio
+    if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
     {
-        //Permite ao jogador parar o pulo no meio
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, 0);
-        }
+        rb.velocity = new Vector2(rb.velocity.x, 0);
+    }
 
-        if (!pState.jumping)
-        {
-            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
-            {
-                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
-                AudioManager.Instance.Play("Pulo");
-            }
-
-        }
-        else if (airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump"))
+    if (!pState.jumping)
+    {
+        if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpForce);
             AudioManager.Instance.Play("Pulo");
-            airJumpCounter++;
         }
-
-        anim.SetBool("Jumping", !IsGrounded());
     }
+
+    anim.SetBool("Jumping", !IsGrounded());
+}
 
     void Move()
     {
@@ -373,7 +372,6 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded())
         {
             coyoteTimeCounter = coyoteTime;
-            airJumpCounter = 0;
         }
         else
         {
@@ -454,18 +452,9 @@ public class PlayerController : MonoBehaviour
         {
             if (upgrade.ativado == false)
             {
-                if (upgrade.nomeUpgrade == "Pulo Duplo")
-                {
-                    EnableDoubleJump();
-                    upgrade.ativado = true;
-                }
+                // futuros upgrades
             }
         }
-    }
-
-    public void EnableDoubleJump()
-    {
-        maxAirJumps = 1;
     }
 
     private bool isBlinking = false;
@@ -473,5 +462,27 @@ public class PlayerController : MonoBehaviour
     {
         if (!isBlinking)
             StartCoroutine(BlinkCoroutine());
+    }
+
+    void UpdateFrictionMaterial()
+    {
+        // Em movimento no chão → baixa fricção
+        if (Mathf.Abs(xAxis) > 0.01f && IsGrounded())
+        {
+            if (col.sharedMaterial != materialSemFriccao)
+                col.sharedMaterial = materialSemFriccao;
+        }
+        // Parado no chão → alta fricção (segura na rampa)
+        else if (IsGrounded())
+        {
+            if (col.sharedMaterial != materialAltaFriccao)
+                col.sharedMaterial = materialAltaFriccao;
+        }
+        // No ar → sem fricção (evitar grudar em paredes)
+        else
+        {
+            if (col.sharedMaterial != materialSemFriccao)
+                col.sharedMaterial = materialSemFriccao;
+        }
     }
 }
