@@ -348,7 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barraDeVida: {fileID: 8295688738242460295}
-  vidaMaxima: 100
+  vidaMaxima: 90
   vidaAtual: 0
 --- !u!1 &8295688737686235114
 GameObject:
