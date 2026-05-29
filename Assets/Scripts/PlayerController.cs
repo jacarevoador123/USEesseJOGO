@@ -96,6 +96,7 @@ public class PlayerController : MonoBehaviour
         sistemaDeVida = GetComponent<SistemaDeVida>();
         vida = sistemaDeVida.vidaAtual;
         gravity = rb.gravityScale;
+        col = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
