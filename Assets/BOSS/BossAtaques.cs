@@ -7,7 +7,7 @@ public class BossAtaques : MonoBehaviour
     [Header("Referencias")]
     public Transform player;
     public LayerMask playerLayer;
-    public string metodoDanoPlayer = "TakeDamage";
+    public string metodoDanoPlayer = "AplicarDano";
 
     [Header("Ataque curto")]
     public int danoCurto = 20;
@@ -122,6 +122,7 @@ public class BossAtaques : MonoBehaviour
     {
         TocarAnimacao(animAtaqueCurto);
         yield return new WaitForSeconds(atrasoPrimeiroCorte);
+        AudioManager.Instance.Play("3CORTES");
 
         for (int i = 0; i < quantidadeCortes; i++)
         {
@@ -140,6 +141,7 @@ public class BossAtaques : MonoBehaviour
     {
         TocarAnimacao(animAtaqueLongo);
         yield return new WaitForSeconds(atrasoSpawnEspada);
+        AudioManager.Instance.Play("VORAZ");
 
         SpawnarProjetil(
             espadaPrefab,
@@ -157,6 +159,7 @@ public class BossAtaques : MonoBehaviour
     private IEnumerator CorrotinaAtaqueSmash()
 {
     TocarAnimacao(animAtaqueSmash);
+    AudioManager.Instance.Play("INICIOSMASH");
 
     if (atrasoInicioPuloSmash > 0f)
         yield return new WaitForSeconds(atrasoInicioPuloSmash);
@@ -169,6 +172,7 @@ public class BossAtaques : MonoBehaviour
         yield return new WaitForSeconds(atrasoSpawnFumaca);
 
     SpawnarFumacaSmash();
+    AudioManager.Instance.Play("FIMSMASH");
 
     float tempoUsado = atrasoInicioPuloSmash + duracaoPuloSmash + Mathf.Max(0f, atrasoSpawnFumaca);
     yield return new WaitForSeconds(Mathf.Max(0f, duracaoAtaqueSmash - tempoUsado));
@@ -224,10 +228,24 @@ public class BossAtaques : MonoBehaviour
         GameObject projetilObj = Instantiate(prefab, posicao, Quaternion.identity);
         BossProjetil projetil = projetilObj.GetComponent<BossProjetil>();
 
-        if (projetil != null)
-            projetil.Iniciar(direcao, dano, velocidade, tempoDeVida, transform, metodoDanoPlayer);
-        else
-            Debug.LogWarning("O prefab " + prefab.name + " precisa do script BossProjetil para causar dano e se mover.");
+if (projetil != null)
+{
+    projetil.Iniciar(direcao, dano, velocidade, tempoDeVida, transform, metodoDanoPlayer);
+    return;
+}
+
+BossSmash smash = projetilObj.GetComponent<BossSmash>();
+
+if (smash != null)
+{
+    smash.Iniciar(direcao, dano, velocidade, tempoDeVida, transform, metodoDanoPlayer);
+    return;
+}
+
+Debug.LogWarning(
+    "O prefab " + prefab.name +
+    " precisa do script BossProjetil ou BossSmash."
+);
     }
 
     private Vector2 DirecaoParaPlayer(bool mirarComAltura)
@@ -248,6 +266,9 @@ public class BossAtaques : MonoBehaviour
 
     private void FinalizarAtaque()
 {
+    if (bossVida != null)
+        bossVida.Invulneravel = false;
+        
     rotinaAtual = null;
     currentState = BossState.Recover;
     ForcarAnimacaoParado();

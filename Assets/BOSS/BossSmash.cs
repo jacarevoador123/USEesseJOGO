@@ -28,20 +28,22 @@ public class BossSmash : MonoBehaviour
             Iniciar(direcao, dano, velocidade, tempoDeVida, dono, metodoDanoPlayer);
     }
 
-    public void Iniciar(Vector2 novaDirecao, int novoDano, float novaVelocidade, float novoTempoDeVida, Transform novoDono, string novoMetodoDano)
-    {
-        direcao = novaDirecao.sqrMagnitude > 0.001f ? novaDirecao.normalized : Vector2.right;
-        dano = novoDano;
-        velocidade = novaVelocidade;
-        tempoDeVida = novoTempoDeVida;
-        dono = novoDono;
-        metodoDanoPlayer = string.IsNullOrEmpty(novoMetodoDano) ? "TakeDamage" : novoMetodoDano;
-        tempoRestante = tempoDeVida;
-        iniciado = true;
+   public void Iniciar(Vector2 novaDirecao, int novoDano, float novaVelocidade, float novoTempoDeVida, Transform novoDono, string novoMetodoDano)
+{
+    direcao = novaDirecao.sqrMagnitude > 0.001f ? novaDirecao.normalized : Vector2.right;
+    dano = novoDano;
+    velocidade = novaVelocidade;
+    tempoDeVida = novoTempoDeVida;
+    dono = novoDono;
+    metodoDanoPlayer = string.IsNullOrEmpty(novoMetodoDano) ? "TakeDamage" : novoMetodoDano;
+    tempoRestante = tempoDeVida;
+    iniciado = true;
 
-        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, angulo);
-    }
+    if (direcao.x < 0f)
+        transform.localScale = new Vector3(-1f, 1f, 1f);
+    else
+        transform.localScale = new Vector3(1f, 1f, 1f);
+}
 
     private void Update()
     {

@@ -3,6 +3,8 @@ using System.Collections;
 
 public class BossVida : MonoBehaviour
 {
+    private bool entrouNaFase2;
+
     [Header("Hit")]
     public float duracaoAnimHit = 0.35f;
     public bool EstaEmHit { get; private set; }
@@ -19,6 +21,7 @@ public class BossVida : MonoBehaviour
     public bool tocarHitAoTomarDano = true;
 
     public bool EstaMorto { get; private set; }
+    public bool Invulneravel { get; set; }
     public bool EstaNaFase2 => !EstaMorto && vidaAtual <= vidaMaxima * porcentagemFase2;
     public float PercentualVida => vidaMaxima <= 0 ? 0f : (float)vidaAtual / vidaMaxima;
 
@@ -48,11 +51,17 @@ private bool corFase2Ativa;
 
     public void AplicarDano(int dano)
     {
-        if (EstaMorto || dano <= 0)
+        if (EstaMorto || Invulneravel || dano <= 0)
             return;
 
         vidaAtual = Mathf.Max(vidaAtual - dano, 0);
         AtualizarCorFase();
+
+        if (EstaNaFase2 && !entrouNaFase2)
+        {
+            entrouNaFase2 = true;
+            AudioManager.Instance.Play("FASE2");
+        }
 
         if (vidaAtual <= 0)
         {
@@ -96,6 +105,7 @@ private bool corFase2Ativa;
     private void Morrer()
     {
         EstaMorto = true;
+        AudioManager.Instance.Play("MORTEBOSS");
 
         if (rb != null)
         {

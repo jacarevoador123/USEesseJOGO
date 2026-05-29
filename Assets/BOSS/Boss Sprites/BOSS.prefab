@@ -183,7 +183,7 @@ MonoBehaviour:
   pontoAtaqueCurto: {fileID: 1910000459596751034}
   tamanhoAtaqueCurto: {x: 2.63, y: 1.4}
   atrasoPrimeiroCorte: 1.2
-  intervaloEntreCortes: 0.5
+  intervaloEntreCortes: 0.7
   quantidadeCortes: 3
   duracaoAtaqueCurto: 3.2
   animAtaqueCurto: ataque_curto
@@ -199,7 +199,7 @@ MonoBehaviour:
   fumacaVermelhaPrefab: {fileID: 9085296303827728279, guid: cedecb17c9487184e8ac62e92bf36be3, type: 3}
   particulaPousoPrefab: {fileID: 1157010416493520944, guid: c783548525de75448ad0db5d3db7f975, type: 3}
   pontoPouso: {fileID: 9208209624773020161}
-  danoSmashProjetil: 15
+  danoSmashProjetil: 20
   velocidadeFumaca: 4
   tempoVidaFumaca: 1
   distanciaSpawnFumaca: 3
@@ -227,13 +227,13 @@ MonoBehaviour:
   player: {fileID: 0}
   distanciaVerPlayer: 16
   distanciaPerderPlayer: 18
-  precisaLinhaDeVisao: 1
+  precisaLinhaDeVisao: 0
   camadasBloqueiamVisao:
     serializedVersion: 2
     m_Bits: 64
   primeiroAtaqueDelay: 4
   tempoParadoDepoisAtaque: 2
-  cooldownEntreAtaques: 7
+  cooldownEntreAtaques: 3
   fase1CurtoMax: 3
   fase1LongoMin: 4
   fase1LongoMax: 16
@@ -257,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pontoA: {fileID: 0}
   pontoB: {fileID: 0}
-  velocidadePatrulha: 0.7
+  velocidadePatrulha: 3
   velocidadePerseguicao: 3
   distanciaChegada: 0.2
   spriteOlhaParaDireita: 1

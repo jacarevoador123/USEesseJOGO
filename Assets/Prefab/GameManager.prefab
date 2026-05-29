@@ -54,10 +54,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2599033753587086595}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 492a7d8200e9d6b418ea3dc9f4fdb0b0, type: 3}
+  m_Script: {fileID: 11500000, guid: 6927c469d1f8af8408dba99f7152d0b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camTransform: {fileID: 0}
-  shakeDuration: 1
-  shakeAmount: 0.7
-  decreaseFactor: 1

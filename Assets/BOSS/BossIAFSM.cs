@@ -1,7 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
 public class BossIAFSM : MonoBehaviour
 {
+    private bool fase2Ativada;
+    private bool transicaoFase2;
+
     [Header("Referencias")]
     public Transform player;
 
@@ -44,6 +48,8 @@ public class BossIAFSM : MonoBehaviour
     private float stateTimer;
     private bool playerFoiVisto;
 
+    public bool VendoPlayer => playerFoiVisto;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -65,6 +71,23 @@ public class BossIAFSM : MonoBehaviour
             currentState = BossState.Dead;
             return;
         }
+
+        if (transicaoFase2)
+{
+    PararBoss();
+
+    if (bossAtaques != null)
+        bossAtaques.ForcarAnimacaoParado();
+
+    return;
+}
+
+        if (bossVida != null && bossVida.EstaNaFase2 && !fase2Ativada)
+{
+    fase2Ativada = true;
+    StartCoroutine(TransicaoFase2());
+    return;
+}
 
         switch (currentState)
         {
@@ -108,12 +131,14 @@ public class BossIAFSM : MonoBehaviour
             playerFoiVisto = true;
             stateTimer = primeiroAtaqueDelay;
             currentState = BossState.Recover;
+            AudioManager.Instance.Play("FASE1");
 
             if (bossPatrulha != null)
                 bossPatrulha.VirarPara(player);
 
             return;
         }
+
 
         playerFoiVisto = false;
 
@@ -193,6 +218,9 @@ public class BossIAFSM : MonoBehaviour
 
     private void ChooseAttackState()
     {
+        if (bossVida != null)
+            bossVida.Invulneravel = true;
+
         if (!PodeContinuarVendoPlayer())
         {
             currentState = BossState.Patrol;
@@ -353,5 +381,59 @@ public class BossIAFSM : MonoBehaviour
 
     if (rb != null)
         rb.velocity = Vector2.zero;
+}
+
+private IEnumerator TransicaoFase2()
+{
+    transicaoFase2 = true;
+
+    currentState = BossState.Recover;
+
+    if (bossVida != null)
+        bossVida.Invulneravel = true;
+
+    AudioManager.Instance.Stop("Tema");
+
+    if (bossPatrulha != null)
+        bossPatrulha.Parar();
+
+    if (bossAtaques != null)
+        bossAtaques.ForcarAnimacaoParado();
+
+    if (rb != null)
+        rb.velocity = Vector2.zero;
+
+    float tempo = 16f;
+
+    while (tempo > 0f)
+    {
+        tempo -= Time.deltaTime;
+
+        if (bossPatrulha != null)
+            bossPatrulha.Parar();
+
+        if (bossAtaques != null)
+            bossAtaques.ForcarAnimacaoParado();
+
+        if (rb != null)
+            rb.velocity = Vector2.zero;
+
+        yield return null;
+    }
+
+    if (bossVida != null && !bossVida.EstaMorto)
+        bossVida.Invulneravel = false;
+
+    AudioManager.Instance.Play("Tema");
+
+    transicaoFase2 = false;
+
+    recuperandoDepoisDeAtaque = true;
+    paradoDepoisDeAtaque = false;
+    stateTimer = cooldownEntreAtaques;
+
+    currentState = PodeContinuarVendoPlayer()
+        ? BossState.Recover
+        : BossState.Patrol;
 }
 }
