@@ -257,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pontoA: {fileID: 0}
   pontoB: {fileID: 0}
-  velocidadePatrulha: 3
+  velocidadePatrulha: 1.5
   velocidadePerseguicao: 3
   distanciaChegada: 0.2
   spriteOlhaParaDireita: 1
