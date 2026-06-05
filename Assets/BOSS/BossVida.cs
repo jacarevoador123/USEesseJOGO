@@ -26,12 +26,12 @@ public class BossVida : MonoBehaviour
     public float PercentualVida => vidaMaxima <= 0 ? 0f : (float)vidaAtual / vidaMaxima;
 
     [Header("Visual fase 2")]
-public bool mudarCorNaFase2 = true;
-public Color corFase2 = new Color(1f, 0.231f, 0f, 1f); // FF3B00
+    public bool mudarCorNaFase2 = true;
+    public Color corFase2 = new Color(1f, 0.231f, 0f, 1f); // FF3B00
 
-private SpriteRenderer[] sprites;
-private Color[] coresOriginais;
-private bool corFase2Ativa;
+    private SpriteRenderer[] sprites;
+    private Color[] coresOriginais;
+    private bool corFase2Ativa;
 
     private Animator anim;
     private Rigidbody2D rb;
@@ -45,7 +45,7 @@ private bool corFase2Ativa;
         coresOriginais = new Color[sprites.Length];
         for (int i = 0; i < sprites.Length; i++)
             coresOriginais[i] = sprites[i].color;
-        
+
         AtualizarCorFase();
     }
 
@@ -70,7 +70,7 @@ private bool corFase2Ativa;
         }
 
         if (tocarHitAoTomarDano)
-        TocarHit();
+            TocarHit();
     }
 
     public void TakeDamage(int dano)
@@ -105,12 +105,21 @@ private bool corFase2Ativa;
     private void Morrer()
     {
         EstaMorto = true;
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+
+        foreach (Collider2D col in colliders)
+        {
+            col.enabled = false;
+        }
+
         AudioManager.Instance.Play("MORTEBOSS");
 
         if (rb != null)
         {
             rb.velocity = Vector2.zero;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.angularVelocity = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
         }
 
         BossIAFSM fsm = GetComponent<BossIAFSM>();
@@ -123,52 +132,52 @@ private bool corFase2Ativa;
 
         if (rotinaHit != null)
             StopCoroutine(rotinaHit);
-            EstaEmHit = false;
+        EstaEmHit = false;
 
         if (anim != null && !string.IsNullOrEmpty(animMorte))
             anim.Play(animMorte, 0, 0f);
     }
 
     private void TocarHit()
-{
-    if (anim == null || string.IsNullOrEmpty(animHit))
-        return;
-
-    if (rotinaHit != null)
-        StopCoroutine(rotinaHit);
-
-    rotinaHit = StartCoroutine(RotinaHit());
-}
-
-private IEnumerator RotinaHit()
-{
-    EstaEmHit = true;
-    anim.Play(animHit, 0, 0f);
-
-    yield return new WaitForSeconds(duracaoAnimHit);
-
-    EstaEmHit = false;
-    rotinaHit = null;
-}
-
-private void AtualizarCorFase()
-{
-    if (!mudarCorNaFase2 || sprites == null)
-        return;
-
-    bool deveUsarCorFase2 = EstaNaFase2;
-
-    if (corFase2Ativa == deveUsarCorFase2)
-        return;
-
-    corFase2Ativa = deveUsarCorFase2;
-
-    for (int i = 0; i < sprites.Length; i++)
     {
-        if (sprites[i] == null)
-            continue;
+        if (anim == null || string.IsNullOrEmpty(animHit))
+            return;
 
-        sprites[i].color = corFase2Ativa ? corFase2 : coresOriginais[i];
+        if (rotinaHit != null)
+            StopCoroutine(rotinaHit);
+
+        rotinaHit = StartCoroutine(RotinaHit());
     }
-}
+
+    private IEnumerator RotinaHit()
+    {
+        EstaEmHit = true;
+        anim.Play(animHit, 0, 0f);
+
+        yield return new WaitForSeconds(duracaoAnimHit);
+
+        EstaEmHit = false;
+        rotinaHit = null;
+    }
+
+    private void AtualizarCorFase()
+    {
+        if (!mudarCorNaFase2 || sprites == null)
+            return;
+
+        bool deveUsarCorFase2 = EstaNaFase2;
+
+        if (corFase2Ativa == deveUsarCorFase2)
+            return;
+
+        corFase2Ativa = deveUsarCorFase2;
+
+        for (int i = 0; i < sprites.Length; i++)
+        {
+            if (sprites[i] == null)
+                continue;
+
+            sprites[i].color = corFase2Ativa ? corFase2 : coresOriginais[i];
+        }
+    }
 }

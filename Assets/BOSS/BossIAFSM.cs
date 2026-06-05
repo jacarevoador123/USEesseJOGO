@@ -3,6 +3,9 @@ using System.Collections;
 
 public class BossIAFSM : MonoBehaviour
 {
+   
+   
+
     private bool fase2Ativada;
     private bool transicaoFase2;
 
@@ -56,6 +59,8 @@ public class BossIAFSM : MonoBehaviour
         bossAtaques = GetComponent<BossAtaques>();
         bossPatrulha = GetComponent<BossPatrulha>();
         bossVida = GetComponent<BossVida>();
+
+       
     }
 
     private void Start()
@@ -73,21 +78,19 @@ public class BossIAFSM : MonoBehaviour
         }
 
         if (transicaoFase2)
-{
-    PararBoss();
+        {
+            if (rb != null)
+                rb.velocity = Vector2.zero;
 
-    if (bossAtaques != null)
-        bossAtaques.ForcarAnimacaoParado();
-
-    return;
-}
+            return;
+        }
 
         if (bossVida != null && bossVida.EstaNaFase2 && !fase2Ativada)
-{
-    fase2Ativada = true;
-    StartCoroutine(TransicaoFase2());
-    return;
-}
+        {
+            fase2Ativada = true;
+            StartCoroutine(TransicaoFase2());
+            return;
+        }
 
         switch (currentState)
         {
@@ -165,56 +168,56 @@ public class BossIAFSM : MonoBehaviour
     }
 
     private void RecoverState()
-{
-    if (recuperandoDepoisDeAtaque)
     {
-        if (paradoDepoisDeAtaque)
+        if (recuperandoDepoisDeAtaque)
         {
-            PararBoss();
+            if (paradoDepoisDeAtaque)
+            {
+                PararBoss();
 
-            if (bossAtaques != null)
-                bossAtaques.ForcarAnimacaoParado();
+                if (bossAtaques != null)
+                    bossAtaques.ForcarAnimacaoParado();
+
+                stateTimer -= Time.deltaTime;
+
+                if (stateTimer <= 0f)
+                {
+                    paradoDepoisDeAtaque = false;
+                    stateTimer = cooldownEntreAtaques;
+                }
+
+                return;
+            }
+
+            if (PodeContinuarVendoPlayer())
+                PerseguirPlayer();
+            else if (bossPatrulha != null)
+                bossPatrulha.Patrulhar(true);
 
             stateTimer -= Time.deltaTime;
 
             if (stateTimer <= 0f)
             {
-                paradoDepoisDeAtaque = false;
-                stateTimer = cooldownEntreAtaques;
+                recuperandoDepoisDeAtaque = false;
+                currentState = PodeContinuarVendoPlayer() ? BossState.ChooseAttack : BossState.Patrol;
             }
 
             return;
         }
 
-        if (PodeContinuarVendoPlayer())
-            PerseguirPlayer();
-        else if (bossPatrulha != null)
-            bossPatrulha.Patrulhar(true);
+        if (!PodeContinuarVendoPlayer())
+        {
+            currentState = BossState.Patrol;
+            return;
+        }
+
+        PararBoss();
 
         stateTimer -= Time.deltaTime;
 
         if (stateTimer <= 0f)
-        {
-            recuperandoDepoisDeAtaque = false;
-            currentState = PodeContinuarVendoPlayer() ? BossState.ChooseAttack : BossState.Patrol;
-        }
-
-        return;
+            currentState = BossState.ChooseAttack;
     }
-
-    if (!PodeContinuarVendoPlayer())
-    {
-        currentState = BossState.Patrol;
-        return;
-    }
-
-    PararBoss();
-
-    stateTimer -= Time.deltaTime;
-
-    if (stateTimer <= 0f)
-        currentState = BossState.ChooseAttack;
-}
 
     private void ChooseAttackState()
     {
@@ -245,21 +248,21 @@ public class BossIAFSM : MonoBehaviour
     }
 
     private void AttackState()
-{
-    if (bossAtaques != null && bossAtaques.GetState() == BossState.Attacking)
-        return;
+    {
+        if (bossAtaques != null && bossAtaques.GetState() == BossState.Attacking)
+            return;
 
-    recuperandoDepoisDeAtaque = true;
-    paradoDepoisDeAtaque = true;
-    stateTimer = tempoParadoDepoisAtaque;
+        recuperandoDepoisDeAtaque = true;
+        paradoDepoisDeAtaque = true;
+        stateTimer = tempoParadoDepoisAtaque;
 
-    PararBoss();
+        PararBoss();
 
-    if (bossAtaques != null)
-        bossAtaques.ForcarAnimacaoParado();
+        if (bossAtaques != null)
+            bossAtaques.ForcarAnimacaoParado();
 
-    currentState = BossState.Recover;
-}
+        currentState = BossState.Recover;
+    }
 
     private void MoverOuPararConformeDistancia()
     {
@@ -286,56 +289,56 @@ public class BossIAFSM : MonoBehaviour
     }
 
     private BossAttackType EscolherAtaque()
-{
-    if (player == null)
-        return BossAttackType.None;
-
-    float distancia = Vector2.Distance(transform.position, player.position);
-    bool fase2 = bossVida != null && bossVida.EstaNaFase2;
-
-    if (!fase2)
     {
-        if (distancia <= fase1CurtoMax)
+        if (player == null)
+            return BossAttackType.None;
+
+        float distancia = Vector2.Distance(transform.position, player.position);
+        bool fase2 = bossVida != null && bossVida.EstaNaFase2;
+
+        if (!fase2)
+        {
+            if (distancia <= fase1CurtoMax)
+                return BossAttackType.Curto;
+
+            if (distancia >= fase1LongoMin && distancia <= fase1LongoMax)
+                return BossAttackType.Longo;
+
+            return BossAttackType.None;
+        }
+
+        if (distancia <= fase2CurtoMax)
             return BossAttackType.Curto;
 
-        if (distancia >= fase1LongoMin && distancia <= fase1LongoMax)
+        if (distancia >= fase2SmashMin && distancia <= fase2SmashMax)
+            return BossAttackType.Smash;
+
+        if (distancia >= fase2LongoMin && distancia <= fase2LongoMax)
             return BossAttackType.Longo;
 
         return BossAttackType.None;
     }
 
-    if (distancia <= fase2CurtoMax)
-        return BossAttackType.Curto;
-
-    if (distancia >= fase2SmashMin && distancia <= fase2SmashMax)
-        return BossAttackType.Smash;
-
-    if (distancia >= fase2LongoMin && distancia <= fase2LongoMax)
-        return BossAttackType.Longo;
-
-    return BossAttackType.None;
-}
-
     private void ExecutarAtaque(BossAttackType ataque)
-{
-    if (bossAtaques == null)
-        return;
-
-    switch (ataque)
     {
-        case BossAttackType.Curto:
-            bossAtaques.Attack_Curto();
-            break;
+        if (bossAtaques == null)
+            return;
 
-        case BossAttackType.Longo:
-            bossAtaques.Attack_Longo();
-            break;
+        switch (ataque)
+        {
+            case BossAttackType.Curto:
+                bossAtaques.Attack_Curto();
+                break;
 
-        case BossAttackType.Smash:
-            bossAtaques.Attack_Smash();
-            break;
+            case BossAttackType.Longo:
+                bossAtaques.Attack_Longo();
+                break;
+
+            case BossAttackType.Smash:
+                bossAtaques.Attack_Smash();
+                break;
+        }
     }
-}
 
     private bool PodeVerPlayer()
     {
@@ -370,70 +373,81 @@ public class BossIAFSM : MonoBehaviour
         return hit.collider == null;
     }
 
-   private void PararBoss()
-{
-    if (bossPatrulha != null)
+    private void PararBoss()
     {
-        bossPatrulha.Parar();
-        bossPatrulha.VirarPara(player);
-        return;
+        if (bossPatrulha != null)
+        {
+            bossPatrulha.Parar();
+            bossPatrulha.VirarPara(player);
+            return;
+        }
+
+        if (rb != null)
+            rb.velocity = Vector2.zero;
     }
 
-    if (rb != null)
-        rb.velocity = Vector2.zero;
-}
-
-private IEnumerator TransicaoFase2()
-{
-    transicaoFase2 = true;
-
-    currentState = BossState.Recover;
-
-    if (bossVida != null)
-        bossVida.Invulneravel = true;
-
-    AudioManager.Instance.Stop("Tema");
-
-    if (bossPatrulha != null)
-        bossPatrulha.Parar();
-
-    if (bossAtaques != null)
-        bossAtaques.ForcarAnimacaoParado();
-
-    if (rb != null)
-        rb.velocity = Vector2.zero;
-
-    float tempo = 16f;
-
-    while (tempo > 0f)
+    private IEnumerator TransicaoFase2()
     {
-        tempo -= Time.deltaTime;
+        Animator anim = GetComponent<Animator>();
 
-        if (bossPatrulha != null)
-            bossPatrulha.Parar();
+        transicaoFase2 = true;
 
-        if (bossAtaques != null)
-            bossAtaques.ForcarAnimacaoParado();
+        if (anim != null)
+            anim.Play("boss_morte", 0, 0f);
+
+        if (CinemachineShake.Instance != null)
+            CinemachineShake.Instance.Shake(8f, 16f, 15f);
+
+        currentState = BossState.Recover;
+
+        if (bossVida != null)
+            bossVida.Invulneravel = true;
+
+        AudioManager.Instance.Stop("Tema");
 
         if (rb != null)
             rb.velocity = Vector2.zero;
 
-        yield return null;
+        if (rb != null)
+            rb.velocity = Vector2.zero;
+
+        float tempo = 16f;
+        bool levantou = false;
+
+        while (tempo > 0f)
+        {
+            tempo -= Time.deltaTime;
+
+            if (!levantou && tempo <= 9f)
+            {
+                levantou = true;
+
+                if (anim != null)
+                    anim.Play("boss_levanta", 0, 0f);
+            }
+
+            if (rb != null)
+                rb.velocity = Vector2.zero;
+
+            if (rb != null)
+                rb.velocity = Vector2.zero;
+
+            yield return null;
+        }
+
+        if (bossVida != null && !bossVida.EstaMorto)
+            bossVida.Invulneravel = false;
+
+        AudioManager.Instance.Play("Tema");
+
+        transicaoFase2 = false;
+
+        recuperandoDepoisDeAtaque = true;
+        paradoDepoisDeAtaque = false;
+        stateTimer = cooldownEntreAtaques;
+
+        currentState = PodeContinuarVendoPlayer()
+            ? BossState.Recover
+            : BossState.Patrol;
     }
-
-    if (bossVida != null && !bossVida.EstaMorto)
-        bossVida.Invulneravel = false;
-
-    AudioManager.Instance.Play("Tema");
-
-    transicaoFase2 = false;
-
-    recuperandoDepoisDeAtaque = true;
-    paradoDepoisDeAtaque = false;
-    stateTimer = cooldownEntreAtaques;
-
-    currentState = PodeContinuarVendoPlayer()
-        ? BossState.Recover
-        : BossState.Patrol;
-}
 }

@@ -22,6 +22,15 @@ public class SistemaDeVida : MonoBehaviour
     public virtual void AplicarDano(float dano)
     {
         vidaAtual -= dano;
+        if (CinemachineShake.Instance != null)
+        {
+            Debug.Log("shake");
+            CinemachineShake.Instance.Shake(8f, 15f, 0.5f);
+        }
+        else
+        {
+            Debug.Log("naoshake");
+        }
 
         PlayerController player = GetComponent<PlayerController>();
         if (player != null)

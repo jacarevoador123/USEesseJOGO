@@ -125,10 +125,7 @@ public class PlayerController : MonoBehaviour
         VerificarUpgrades();
         UpdateFrictionMaterial();
         
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            GameManager.Instance.TremerCamera();
-        }
+       
     }
 
     private void PauseGame()
@@ -395,7 +392,10 @@ public class PlayerController : MonoBehaviour
         sistemaDeVida.AplicarDano(damage);
         HUDController.Instance.AtualizarVida(); // Atualiza o HUD dos corações
         AudioManager.Instance.Play("Dano");
-        GameManager.Instance.TremerCamera();
+        if (CinemachineShake.Instance != null)
+        {
+            CinemachineShake.Instance.Shake(8f, 15f, 0.5f);
+        }
         Debug.Log("Tomou dano!");
         if (sistemaDeVida.vidaAtual <= 0)
         {

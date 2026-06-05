@@ -19,7 +19,7 @@ public class HUDController : MonoBehaviour
             Destroy(gameObject);
         }
         else
-        {
+        {   
             Instance = this;
         }
     }

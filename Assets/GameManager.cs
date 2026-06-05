@@ -15,8 +15,5 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void TremerCamera(float duracao = -1)
-    {
-        Camera.main.GetComponent<CameraFollow>().Tremer(duracao);
-    }
+   
 }

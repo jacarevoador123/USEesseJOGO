@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class SistemaDeVidaInimigo : SistemaDeVida
 {
@@ -17,7 +18,12 @@ public class SistemaDeVidaInimigo : SistemaDeVida
 
     public override void AplicarDano(float dano)
     {
+        if (inimigo.invulneravel || inimigo.atacando)
+            return;
+
         vidaAtual -= dano;
+
+        StartCoroutine(Invulnerabilidade());
 
         AudioManager.Instance.Play("DanoInimigo");
 
@@ -44,5 +50,14 @@ public class SistemaDeVidaInimigo : SistemaDeVida
         {
             barraDeVidaInimigo.AtualizarUI(vidaAtual / vidaMaxima);
         }
+    }
+
+    private IEnumerator Invulnerabilidade()
+    {
+        inimigo.invulneravel = true;
+
+        yield return new WaitForSeconds(inimigo.tempoInvulnerabilidade);
+
+        inimigo.invulneravel = false;
     }
 }

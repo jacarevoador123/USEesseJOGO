@@ -3,11 +3,16 @@ using UnityEngine;
 
 public class Inimigo : MonoBehaviour
 {
+    [Header("Invulnerabilidade")]
+    public float tempoInvulnerabilidade = 0.5f;
+
+    [HideInInspector] public bool invulneravel = false;
+
     [Header("Patrulha")]
     public Transform pontoA;
     public Transform pontoB;
     public float toleranciaPonto = 0.2f;
-    
+
     private Transform alvoPatrulha;
 
     [Header("Configurações")]
@@ -21,7 +26,9 @@ public class Inimigo : MonoBehaviour
     public int danoAtaque = 10;
     public float tempoEntreAtaques = 2f;      // frequência do ataque
     private bool playerNoAlcance = false;
-    private bool atacando = false;
+
+    [HideInInspector]
+    public bool atacando = false;
 
     [SerializeField] private bool movingRight = false;
 
@@ -176,23 +183,20 @@ public class Inimigo : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             playerNoAlcance = false;
-            
+
         }
     }
 
     IEnumerator AtaqueContinuo(GameObject playerObj)
     {
         atacando = true;
+        TravarX();
 
         while (vivo)
         {
-            rb.velocity = Vector2.zero;
-
             if (playerNoAlcance)
             {
-                //Travar o rigidbody em X enquanto ele tá atacando]
                 anim.SetTrigger("Ataque");
-                //colocar uma segunda opção de grito pelo amor de deus
                 AudioManager.Instance.Play("GritoDeGuerra");
             }
 
@@ -202,7 +206,7 @@ public class Inimigo : MonoBehaviour
                 break;
         }
 
-        //destrava o rigidbody em x
+        DestravarX();
         atacando = false;
     }
 
@@ -211,6 +215,9 @@ public class Inimigo : MonoBehaviour
     // ========================================================
     public void EfeitoDeRecuo()
     {
+        if (atacando || !vivo)
+            return;
+
         isKnockBacked = true;
 
         float knockbackDirection = movingRight ? -1f : 1f;
@@ -260,7 +267,14 @@ public class Inimigo : MonoBehaviour
     internal void AnimacaoDeMorte()
     {
         vivo = false;
+
+        rb.velocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX |
+                         RigidbodyConstraints2D.FreezePositionY |
+                         RigidbodyConstraints2D.FreezeRotation;
+
         rb.isKinematic = true;
+
         col.enabled = false;
 
         anim.SetBool("Vivo", vivo);
@@ -312,8 +326,19 @@ public class Inimigo : MonoBehaviour
             {
                 newRotation = Quaternion.Euler(0f, 180f, 0f);
             }
-            
+
             child.rotation = newRotation;
         }
+    }
+
+    private void TravarX()
+    {
+        rb.velocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+    }
+
+    private void DestravarX()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 }
