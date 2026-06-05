@@ -530,6 +530,7 @@ public bool podeDash = false;
 IEnumerator AbissalRoutine()
 {
     isAbissalAttacking = true;
+    AudioManager.Instance.Play("ABISSAL_PROFUNDO");
     lastAbissalTime = Time.time + abissalCooldown;
 
     rb.velocity = Vector2.zero;
@@ -563,6 +564,8 @@ void SpawnAbissalProjectile()
         rotation.eulerAngles = new Vector3(0, 0, 0);
 
     Instantiate(abissalPrefab, position, rotation);
+
+    
 }
 
 public void UnlockAbissal()
