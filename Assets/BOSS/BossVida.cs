@@ -106,6 +106,12 @@ public class BossVida : MonoBehaviour
     {
         EstaMorto = true;
 
+        PlayerController player = PlayerController.Instance;
+if (player != null)
+{
+    player.UnlockAbissal();
+}
+
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
 
         foreach (Collider2D col in colliders)

@@ -13,5 +13,6 @@ public enum BossAttackType
     None,
     Curto,
     Longo,
-    Smash
+    Smash,
+    Area
 }

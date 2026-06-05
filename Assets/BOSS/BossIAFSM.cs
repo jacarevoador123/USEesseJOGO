@@ -3,9 +3,6 @@ using System.Collections;
 
 public class BossIAFSM : MonoBehaviour
 {
-   
-   
-
     private bool fase2Ativada;
     private bool transicaoFase2;
 
@@ -308,7 +305,7 @@ public class BossIAFSM : MonoBehaviour
         }
 
         if (distancia <= fase2CurtoMax)
-            return BossAttackType.Curto;
+            return BossAttackType.Area;
 
         if (distancia >= fase2SmashMin && distancia <= fase2SmashMax)
             return BossAttackType.Smash;
@@ -326,6 +323,10 @@ public class BossIAFSM : MonoBehaviour
 
         switch (ataque)
         {
+            case BossAttackType.Area:
+                bossAtaques.Attack_Area();
+                break;
+
             case BossAttackType.Curto:
                 bossAtaques.Attack_Curto();
                 break;

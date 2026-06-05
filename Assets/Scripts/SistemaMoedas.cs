@@ -8,12 +8,14 @@ public class SistemaMoedas : MonoBehaviour
 
     void Start()
     {
+        moedas = GameManager.Instance.moedas;
         AtualizarUIMoedas();
     }
 
     public void GanharMoedas(int quantidade)
     {
         moedas += quantidade;
+        GameManager.Instance.moedas = moedas;
         AtualizarUIMoedas();
     }
 
@@ -22,4 +24,15 @@ public class SistemaMoedas : MonoBehaviour
         if (textoMoedas != null)
             textoMoedas.text = "Moedas: " + moedas;
     }
+
+    public bool TemMoedas(int quantidade)
+{
+    return moedas >= quantidade;
+}
+
+public void GastarMoedas(int quantidade)
+{
+    moedas -= quantidade;
+    AtualizarUIMoedas();
+}
 }

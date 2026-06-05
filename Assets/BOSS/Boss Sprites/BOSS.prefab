@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &105489335
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 105489336}
+  m_Layer: 0
+  m_Name: PontoDanoArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &105489336
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105489335}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.19, y: 0.83, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1319691525369347353}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1451778167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1451778168}
+  m_Layer: 0
+  m_Name: PontoSpawnArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1451778168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451778167}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.48, y: -3.16, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1319691525369347353}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1319691525369347356
 GameObject:
   m_ObjectHideFlags: 0
@@ -39,6 +101,8 @@ Transform:
   - {fileID: 1910000459596751034}
   - {fileID: 7697877463127623081}
   - {fileID: 9208209624773020161}
+  - {fileID: 105489336}
+  - {fileID: 1451778168}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -174,6 +238,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa992ee53e42314409239ec25f9902ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pontoSpawnArea: {fileID: 1451778168}
+  pontoDanoArea: {fileID: 105489336}
+  efeitoAtaqueArea: {fileID: 5954771310069590120, guid: 0069fb1c37f7148409df8e570fdd4d3e, type: 3}
+  raioArea: 4.56
+  danoArea: 10
+  delayArea: 0.2
   player: {fileID: 0}
   playerLayer:
     serializedVersion: 2
@@ -201,7 +271,7 @@ MonoBehaviour:
   pontoPouso: {fileID: 9208209624773020161}
   danoSmashProjetil: 20
   velocidadeFumaca: 4
-  tempoVidaFumaca: 1
+  tempoVidaFumaca: 1.5
   distanciaSpawnFumaca: 3
   alturaSpawnFumaca: 0
   atrasoSpawnFumaca: 0.2
@@ -211,6 +281,7 @@ MonoBehaviour:
   duracaoParticulaPouso: 0.2
   duracaoAtaqueSmash: 4
   animAtaqueSmash: ataque_smash
+  animAtaqueArea: ataque_area
   animParado: parado
 --- !u!114 &6715118534796464186
 MonoBehaviour:
@@ -237,8 +308,8 @@ MonoBehaviour:
   fase1CurtoMax: 3
   fase1LongoMin: 4
   fase1LongoMax: 16
-  fase2CurtoMax: 2
-  fase2SmashMin: 3
+  fase2CurtoMax: 4
+  fase2SmashMin: 5
   fase2SmashMax: 10
   fase2LongoMin: 11
   fase2LongoMax: 16
@@ -276,8 +347,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duracaoAnimHit: 1
-  vidaMaxima: 3000
-  vidaAtual: 3000
+  vidaMaxima: 60
+  vidaAtual: 60
   porcentagemFase2: 0.5
   animHit: boss_hit
   animMorte: boss_morte

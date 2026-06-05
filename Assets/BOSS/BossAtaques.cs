@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class BossAtaques : MonoBehaviour
 {
+    [Header("Ataque Area - Pontos separados")]
+public Transform pontoSpawnArea;
+public Transform pontoDanoArea;
+
+    [Header("Ataque Area (Fase 2)")]
+public GameObject efeitoAtaqueArea;
+
+public float raioArea = 3f;
+public int danoArea = 25;
+public float delayArea = 0.2f;
+
     [Header("Referencias")]
     public Transform player;
     public LayerMask playerLayer;
@@ -46,6 +57,7 @@ public class BossAtaques : MonoBehaviour
     public float duracaoParticulaPouso = 1.2f;
     public float duracaoAtaqueSmash = 1.3f;
     public string animAtaqueSmash = "ataque_smash";
+    public string animAtaqueArea = "ataque_area";
 
     [Header("Animacao de saida")]
     public string animParado = "parado";
@@ -275,17 +287,12 @@ Debug.LogWarning(
 }
 
     private void TocarAnimacao(string nome)
-    {
-        if (anim != null && !string.IsNullOrEmpty(nome))
-            anim.Play(nome, 0, 0f);
-    }
+{
+    if (anim == null || string.IsNullOrEmpty(nome))
+        return;
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Vector2 centro = pontoAtaqueCurto != null ? pontoAtaqueCurto.position : transform.position;
-        Gizmos.DrawWireCube(centro, tamanhoAtaqueCurto);
-    }
+    anim.CrossFade(nome, 0.05f);
+}
 
     public void ForcarAnimacaoParado()
 {
@@ -368,5 +375,75 @@ private void RestaurarRigidbodyDepoisSmash()
     rb.gravityScale = gravidadeOriginal;
     rb.velocity = Vector2.zero;
     gravidadeAlteradaNoSmash = false;
+}
+
+public void Attack_Area()
+{
+    ComecarAtaque(CorrotinaAtaqueArea());
+}
+
+private IEnumerator CorrotinaAtaqueArea()
+{
+    // toca animação
+    TocarAnimacao(animAtaqueArea);
+
+    if (AudioManager.Instance != null)
+        AudioManager.Instance.Play("SMASH_AREA");
+
+    // duração total da animação
+    float duracaoAnimacao = 3.4f;
+
+    // tempo até o impacto
+    float tempoImpacto = 1.5f;
+
+    GameObject efeitoInstanciado = null;
+
+    // espera até o impacto
+    yield return new WaitForSeconds(tempoImpacto);
+
+    // SPAWN DO EFEITO
+    Vector3 posSpawn = pontoSpawnArea != null ? pontoSpawnArea.position : transform.position;
+
+    if (efeitoAtaqueArea != null)
+    {
+        efeitoInstanciado = Instantiate(efeitoAtaqueArea, posSpawn, Quaternion.identity);
+    }
+
+    // DANO
+    Vector2 centroDano = pontoDanoArea != null ? pontoDanoArea.position : transform.position;
+
+    Collider2D[] hits = Physics2D.OverlapCircleAll(centroDano, raioArea, playerLayer);
+
+    foreach (var hit in hits)
+    {
+        if (hit.CompareTag("Player"))
+        {
+            hit.SendMessage(metodoDanoPlayer, danoArea, SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
+    // espera terminar animação total
+    float restante = duracaoAnimacao - tempoImpacto;
+    if (restante > 0f)
+        yield return new WaitForSeconds(restante);
+
+    // destrói efeito no final da animação
+    if (efeitoInstanciado != null)
+        Destroy(efeitoInstanciado);
+
+    FinalizarAtaque();
+}
+
+private void OnDrawGizmosSelected()
+{
+    // SPAWN (amarelo)
+    Gizmos.color = Color.yellow;
+    Vector3 spawn = pontoSpawnArea != null ? pontoSpawnArea.position : transform.position;
+    Gizmos.DrawWireSphere(spawn, 0.2f);
+
+    // DANO (vermelho)
+    Gizmos.color = Color.red;
+    Vector3 dano = pontoDanoArea != null ? pontoDanoArea.position : transform.position;
+    Gizmos.DrawWireSphere(dano, raioArea);
 }
 }

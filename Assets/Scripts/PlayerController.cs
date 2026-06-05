@@ -6,6 +6,22 @@ using Color = UnityEngine.Color;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Abissal Attack")]
+public bool podeAbissal = false;
+public GameObject abissalPrefab;
+public Transform shootPositionAbissal;
+public float abissalDelay = 1f;
+public float abissalCooldown = 1.5f;
+
+private float lastAbissalTime;
+private bool isAbissalAttacking;
+
+    [Header("Shoot Unlock")]
+public bool podeShoot = false;
+
+    [Header("Dash Unlock")]
+public bool podeDash = false;
+
     private bool isWalkingSoundPlaying = false;
 
     private bool isAttacking = false;
@@ -99,11 +115,21 @@ public class PlayerController : MonoBehaviour
         col = GetComponent<Collider2D>();
     }
 
+    void Start()
+{
+    if (GameManager.Instance != null)
+    {
+        podeDash = GameManager.Instance.podeDash;
+        podeShoot = GameManager.Instance.podeShoot;
+    }
+}
+
     // Update is called once per frame
     void Update()
     {
         GetInputs();
         UpdateJumpVariables();
+        UseAbissal();
 
         if (pState.dashing) return;
 
@@ -211,6 +237,8 @@ public class PlayerController : MonoBehaviour
     
     void Shoot()
     {
+        if (!podeShoot) return;
+
         if (Input.GetButtonDown("Fire2") && lastShootTime < Time.time && !isAttacking)
         {
             isAttacking = true;
@@ -269,6 +297,8 @@ public class PlayerController : MonoBehaviour
 
     void StartDash()
     {
+        if (!podeDash) return;
+
         if (Input.GetButtonDown("Dash") && canDash && !dashed)
         {
             StartCoroutine(nameof(Dash));
@@ -486,4 +516,57 @@ public class PlayerController : MonoBehaviour
                 col.sharedMaterial = materialSemFriccao;
         }
     }
+
+    void UseAbissal()
+{
+    if (!podeAbissal) return;
+    if (isAbissalAttacking) return;
+    if (Time.time < lastAbissalTime) return;
+    if (!Input.GetKeyDown(KeyCode.Q)) return;
+
+    StartCoroutine(AbissalRoutine());
+}
+
+IEnumerator AbissalRoutine()
+{
+    isAbissalAttacking = true;
+    lastAbissalTime = Time.time + abissalCooldown;
+
+    rb.velocity = Vector2.zero;
+
+    anim.Play("Player_Abissal", 0, 0f);
+
+    // pega duração REAL da animação
+    AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+    float animDuration = stateInfo.length;
+
+    yield return new WaitForSeconds(abissalDelay);
+
+    SpawnAbissalProjectile();
+
+    yield return new WaitForSeconds(0.2f);
+
+    isAbissalAttacking = false;
+}
+
+void SpawnAbissalProjectile()
+{
+    if (abissalPrefab == null || shootPositionAbissal == null)
+        return;
+
+    Vector3 position = shootPositionAbissal.position;
+    Quaternion rotation = abissalPrefab.transform.rotation;
+
+    if (spriteRenderer.flipX)
+        rotation.eulerAngles = new Vector3(0, 180, 0);
+    else
+        rotation.eulerAngles = new Vector3(0, 0, 0);
+
+    Instantiate(abissalPrefab, position, rotation);
+}
+
+public void UnlockAbissal()
+{
+    podeAbissal = true;
+}
 }
