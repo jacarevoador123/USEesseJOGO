@@ -36,5 +36,12 @@ public class AbissalProjectile : MonoBehaviour
             enemy.AplicarDano(damage);
             Destroy(gameObject);
         }
+
+        SistemaDeVidaVoador voador = other.GetComponent<SistemaDeVidaVoador>();
+        if (voador != null)
+        {
+            voador.AplicarDano(damage);
+            Destroy(gameObject);
+        }
     }
 }

@@ -10,9 +10,17 @@ public class MenuPausa : MonoBehaviour
         HUDController.Instance.RetornarJogo();
     }
 
+    public void ReiniciarFase()
+    {
+        Time.timeScale = 1f;
+
+        Scene cenaAtual = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(cenaAtual.name);
+    }
+
     public void Sair()
     {
-        Time.timeScale = 1;
+        Time.timeScale = 1f;
 
         if (HUDController.Instance != null)
         {

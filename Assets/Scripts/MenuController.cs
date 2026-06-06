@@ -7,6 +7,11 @@ public class MenuController : MonoBehaviour
 {
     public void IniciarJogo(string nomeFase)
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetarProgresso();
+        }
+
         SceneManager.LoadScene(nomeFase);
     }
 

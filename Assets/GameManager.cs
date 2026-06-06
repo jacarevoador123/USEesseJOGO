@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     [Header("Progressão do Player")]
     public bool podeDash;
     public bool podeShoot;
+    public bool podeAbissal;
+    public bool possuiChave;
     public int moedas;
 
     private void Awake()
@@ -20,4 +22,13 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    public void ResetarProgresso()
+{
+    podeDash = false;
+    podeShoot = false;
+    podeAbissal = false;
+    possuiChave = false;
+    moedas = 0;
+}
 }

@@ -8,6 +8,17 @@ public class TocarCogu : MonoBehaviour
 
     private bool coletada = false;
 
+    private void Start()
+{
+    if(GameManager.Instance.podeDash)
+    {
+        if(imagemDoCanvas != null && novaImagem != null)
+            imagemDoCanvas.sprite = novaImagem;
+
+        gameObject.SetActive(false);
+    }
+}
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         // impede coletar mais de uma vez
@@ -25,6 +36,10 @@ public class TocarCogu : MonoBehaviour
 
             GameManager.Instance.podeDash = true;
             other.GetComponent<PlayerController>().podeDash = true;
+
+            TutorialPopup.Instance.Mostrar(
+    "DESBLOQUEADO: DASH\n\nPressione SHIFT para executar um dash."
+);
 
             // Faz o objeto sumir
             gameObject.SetActive(false);

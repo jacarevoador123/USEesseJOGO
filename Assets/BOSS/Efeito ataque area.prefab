@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7570951222335775976}
   - component: {fileID: 3133650893931718673}
   - component: {fileID: 3640347990624827637}
+  - component: {fileID: -8229455470195621384}
+  - component: {fileID: 739514227952054620}
   m_Layer: 0
   m_Name: Efeito ataque area
   m_TagString: Untagged
@@ -106,3 +108,32 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-8229455470195621384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5954771310069590120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a807c7da408c8d94b8e821bf846b2603, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dano: 10
+--- !u!58 &739514227952054620
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5954771310069590120}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 1.4000001}
+  serializedVersion: 2
+  m_Radius: 1.3645277

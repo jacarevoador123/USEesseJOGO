@@ -330,7 +330,7 @@ MonoBehaviour:
   toleranciaPonto: 0.2
   moveSpeed: 2
   chaseSpeed: 3.5
-  visionRange: 7
+  visionRange: 9
   visionHeight: 2
   knockbackForce: 7
   danoAtaque: 10

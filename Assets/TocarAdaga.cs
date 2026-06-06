@@ -11,6 +11,17 @@ public class TocarAdaga : MonoBehaviour
     private bool jogadorEmCima = false;
     private bool coletada = false;
 
+    private void Start()
+{
+    if(GameManager.Instance.podeShoot)
+    {
+        if(imagemDoCanvas != null && novaImagem != null)
+            imagemDoCanvas.sprite = novaImagem;
+
+        gameObject.SetActive(false);
+    }
+}
+
     private void Update()
     {
         if (coletada) return;
@@ -34,8 +45,14 @@ public class TocarAdaga : MonoBehaviour
 
             PlayerController player = FindFirstObjectByType<PlayerController>();
             if (player != null)
-                GameManager.Instance.podeShoot = true;
-                player.podeShoot = true;
+{
+    GameManager.Instance.podeShoot = true;
+    player.podeShoot = true;
+}
+
+TutorialPopup.Instance.Mostrar(
+    "DESBLOQUEADO: ADAGA\n\nPressione o BOTÃO DIREITO DO MOUSE para lançar a adaga."
+);
 
             gameObject.SetActive(false);
         }

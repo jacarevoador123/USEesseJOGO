@@ -203,28 +203,21 @@ public class Voador : MonoBehaviour
     birdPodeRasar = true;
     }
 
-    void OnCollisionEnter2D(Collision2D col)
+    void OnTriggerEnter2D(Collider2D col)
+{
+    if (!birdVivo) return;
+
+    if (col.CompareTag("Player"))
     {
-        if (!birdVivo) return;
+        SistemaDeVida vida = col.GetComponent<SistemaDeVida>();
 
-        if (col.gameObject.CompareTag("Player"))
+        if (vida != null)
         {
-            var vida = col.gameObject.GetComponent<SistemaDeVida>();
-            if (vida != null) vida.AplicarDano(10);
+            vida.AplicarDano(10);
             AudioManager.Instance.Play("Dano");
-            return;
-        }
-
-        foreach (ContactPoint2D contact in col.contacts)
-        {
-            if (Mathf.Abs(contact.normal.x) > Mathf.Abs(contact.normal.y))
-            {
-                if (col.gameObject.CompareTag("Voador")) continue;
-                birdMovingRight = !birdMovingRight;
-                return;
-            }
         }
     }
+}
 
     // Efeito de recuo
     public void Bird_EfeitoDeRecuo()

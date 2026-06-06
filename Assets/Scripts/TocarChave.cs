@@ -8,6 +8,17 @@ public class TocarChave : MonoBehaviour
 
     private bool coletada = false;
 
+    private void Start()
+{
+    if(GameManager.Instance.possuiChave)
+    {
+        if(imagemDoCanvas != null && novaImagem != null)
+            imagemDoCanvas.sprite = novaImagem;
+
+        gameObject.SetActive(false);
+    }
+}
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         // impede coletar mais de uma vez
@@ -22,6 +33,8 @@ public class TocarChave : MonoBehaviour
             {
                 imagemDoCanvas.sprite = novaImagem;
             }
+
+            GameManager.Instance.possuiChave = true;
 
             // Faz o objeto sumir
             gameObject.SetActive(false);

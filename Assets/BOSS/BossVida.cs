@@ -105,11 +105,12 @@ public class BossVida : MonoBehaviour
     private void Morrer()
     {
         EstaMorto = true;
-
+        AudioManager.Instance.Stop("Tema");
         PlayerController player = PlayerController.Instance;
 if (player != null)
 {
     player.UnlockAbissal();
+    GameManager.Instance.podeAbissal = true;
 }
 
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
@@ -142,6 +143,11 @@ if (player != null)
 
         if (anim != null && !string.IsNullOrEmpty(animMorte))
             anim.Play(animMorte, 0, 0f);
+
+        if(FinalDoJogo.Instance != null)
+{
+    FinalDoJogo.Instance.BossDerrotado();
+}
     }
 
     private void TocarHit()

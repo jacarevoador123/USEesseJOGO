@@ -273,7 +273,7 @@ MonoBehaviour:
   abissalPrefab: {fileID: 777184467074470460, guid: ef1cb15502b8eda4ab2585c3ae506f68, type: 3}
   shootPositionAbissal: {fileID: 1215418573}
   abissalDelay: 0.3
-  abissalCooldown: 1.5
+  abissalCooldown: 3
   podeShoot: 0
   podeDash: 0
   walkSpeed: 5
@@ -299,8 +299,8 @@ MonoBehaviour:
   blinkCount: 5
   fireballPrefab: {fileID: 777215490714587679, guid: 439720aa7865d6e46802951a98165b99, type: 3}
   shootPosition: {fileID: 1314657335915458064}
-  shootCooldown: 1
-  attackCooldown: 0.5
+  shootCooldown: 1.5
+  attackCooldown: 1
   upgrades: []
   vida: 0
   sistemaDeVida: {fileID: 0}

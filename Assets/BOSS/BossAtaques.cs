@@ -406,20 +406,18 @@ private IEnumerator CorrotinaAtaqueArea()
 
     if (efeitoAtaqueArea != null)
     {
-        efeitoInstanciado = Instantiate(efeitoAtaqueArea, posSpawn, Quaternion.identity);
-    }
+        efeitoInstanciado = Instantiate(
+    efeitoAtaqueArea,
+    posSpawn,
+    Quaternion.identity
+);
 
-    // DANO
-    Vector2 centroDano = pontoDanoArea != null ? pontoDanoArea.position : transform.position;
+AreaBossDano area = efeitoInstanciado.GetComponent<AreaBossDano>();
 
-    Collider2D[] hits = Physics2D.OverlapCircleAll(centroDano, raioArea, playerLayer);
-
-    foreach (var hit in hits)
-    {
-        if (hit.CompareTag("Player"))
-        {
-            hit.SendMessage(metodoDanoPlayer, danoArea, SendMessageOptions.DontRequireReceiver);
-        }
+if (area != null)
+{
+    area.dano = danoArea;
+}
     }
 
     // espera terminar animação total

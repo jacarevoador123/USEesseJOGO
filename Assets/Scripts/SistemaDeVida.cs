@@ -52,9 +52,17 @@ public class SistemaDeVida : MonoBehaviour
     }
 
     protected virtual void Morrer()
+{
+    PlayerController player = GetComponent<PlayerController>();
+
+    if (player != null)
     {
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
+        player.Die();
+        return;
     }
+
+    string currentSceneName = SceneManager.GetActiveScene().name;
+    SceneManager.LoadScene(currentSceneName);
+}
 
 }

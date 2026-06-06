@@ -334,7 +334,7 @@ MonoBehaviour:
   birdMoveSpeed: 2
   birdMaxHealth: 1
   birdKnockbackForce: 0
-  birdDistanciaVer: 10
+  birdDistanciaVer: 8
   birdVelocidadeRasante: 2
   birdAlturaRasante: -2
   birdTempoEntreRasantes: 1.2
@@ -385,7 +385,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.07036663}

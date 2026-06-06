@@ -121,6 +121,7 @@ public bool podeDash = false;
     {
         podeDash = GameManager.Instance.podeDash;
         podeShoot = GameManager.Instance.podeShoot;
+        podeAbissal = GameManager.Instance.podeAbissal;
     }
 }
 
@@ -440,10 +441,49 @@ public bool podeDash = false;
         HUDController.Instance.UpdateHearts(); // Atualiza o HUD dos corações
     }*/
 
-    private void Die()
+    public void Die()
+{
+    // CHECKPOINT DO BOSS
+    BossCheckpoint bossCheckpoint = FindFirstObjectByType<BossCheckpoint>();
+
+    if (bossCheckpoint != null)
     {
-        Debug.Log("No céu tem pão?");
+        sistemaDeVida.vidaAtual = sistemaDeVida.vidaMaxima;
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.velocity = Vector2.zero;
+
+        HUDController.Instance.AtualizarVida();
+
+        transform.position = bossCheckpoint.transform.position;
+        return;
     }
+
+    // CHECKPOINTS NORMAIS
+    if (CheckpointManager.Instance != null)
+    {
+        Vector3 checkpoint = CheckpointManager.Instance.GetCheckpoint();
+
+        if (checkpoint != Vector3.zero)
+        {
+            sistemaDeVida.vidaAtual = sistemaDeVida.vidaMaxima;
+
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+                rb.velocity = Vector2.zero;
+
+            HUDController.Instance.AtualizarVida();
+
+            transform.position = checkpoint;
+            return;
+        }
+    }
+
+    // SEM CHECKPOINT
+    string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+    UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
+}
 
     public void MoveToCheckPoint(Transform checkPointPosition)
     {
@@ -530,6 +570,7 @@ public bool podeDash = false;
 IEnumerator AbissalRoutine()
 {
     isAbissalAttacking = true;
+    isAttacking = true;
     AudioManager.Instance.Play("ABISSAL_PROFUNDO");
     lastAbissalTime = Time.time + abissalCooldown;
 
@@ -545,8 +586,9 @@ IEnumerator AbissalRoutine()
 
     SpawnAbissalProjectile();
 
-    yield return new WaitForSeconds(0.2f);
+    yield return new WaitForSeconds(1f);
 
+    isAttacking = false;
     isAbissalAttacking = false;
 }
 
