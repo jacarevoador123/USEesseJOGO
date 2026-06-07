@@ -31920,11 +31920,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1115700630254840986, guid: ab68d70da678e014397838b580f1db06, type: 3}
       propertyPath: vidaAtual
-      value: 60
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 1115700630254840986, guid: ab68d70da678e014397838b580f1db06, type: 3}
       propertyPath: vidaMaxima
-      value: 60
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 1319691525369347353, guid: ab68d70da678e014397838b580f1db06, type: 3}
       propertyPath: m_RootOrder
