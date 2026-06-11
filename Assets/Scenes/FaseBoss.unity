@@ -31598,6 +31598,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5681160487921491242, guid: e2fc0224bab163246ac670c3956a7dbe, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReiniciarFase
+      objectReference: {fileID: 0}
     - target: {fileID: 6309778854489747154, guid: e2fc0224bab163246ac670c3956a7dbe, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
