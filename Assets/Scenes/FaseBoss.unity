@@ -32066,6 +32066,14 @@ PrefabInstance:
       propertyPath: danoCurto
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3092987033558989811, guid: ab68d70da678e014397838b580f1db06, type: 3}
+      propertyPath: danoContato
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092987033558989811, guid: ab68d70da678e014397838b580f1db06, type: 3}
+      propertyPath: intervaloDanoContato
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6715118534796464186, guid: ab68d70da678e014397838b580f1db06, type: 3}
       propertyPath: player
       value: 

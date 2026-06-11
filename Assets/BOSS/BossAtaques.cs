@@ -121,20 +121,29 @@ public float delayArea = 0.2f;
             rb.velocity = Vector2.zero;
     }
 
-    private void ComecarAtaque(IEnumerator rotina)
+    private RigidbodyType2D bodyTypeOriginal;
+
+private void ComecarAtaque(IEnumerator rotina)
+{
+    if (currentState == BossState.Attacking)
+        return;
+
+    if (rb != null)
     {
-        if (currentState == BossState.Attacking)
-            return;
-
-        if (patrulha != null)
-            patrulha.Parar();
-
-        if (player != null && patrulha != null)
-            patrulha.VirarPara(player);
-
-        currentState = BossState.Attacking;
-        rotinaAtual = StartCoroutine(rotina);
+        bodyTypeOriginal = rb.bodyType;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.velocity = Vector2.zero;
     }
+
+    if (patrulha != null)
+        patrulha.Parar();
+
+    if (player != null && patrulha != null)
+        patrulha.VirarPara(player);
+
+    currentState = BossState.Attacking;
+    rotinaAtual = StartCoroutine(rotina);
+}
 
     private IEnumerator CorrotinaAtaqueCurto()
     {
@@ -282,11 +291,17 @@ Debug.LogWarning(
         return direcao.normalized;
     }
 
-    private void FinalizarAtaque()
+   private void FinalizarAtaque()
 {
     if (bossVida != null)
         bossVida.Invulneravel = false;
-        
+
+    if (rb != null)
+    {
+        rb.bodyType = bodyTypeOriginal;
+        rb.velocity = Vector2.zero;
+    }
+
     rotinaAtual = null;
     currentState = BossState.Recover;
     ForcarAnimacaoParado();
