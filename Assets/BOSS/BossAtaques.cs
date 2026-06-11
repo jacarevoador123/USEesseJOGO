@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class BossAtaques : MonoBehaviour
 {
+    [Header("Dano por contato")]
+public int danoContato = 10;
+public float intervaloDanoContato = 0.5f;
+
+private float proximoDanoContato;
+
     [Header("Ataque Area - Pontos separados")]
 public Transform pontoSpawnArea;
 public Transform pontoDanoArea;
@@ -443,5 +449,22 @@ private void OnDrawGizmosSelected()
     Gizmos.color = Color.red;
     Vector3 dano = pontoDanoArea != null ? pontoDanoArea.position : transform.position;
     Gizmos.DrawWireSphere(dano, raioArea);
+}
+
+private void OnCollisionStay2D(Collision2D collision)
+{
+    if (!collision.gameObject.CompareTag("Player"))
+        return;
+
+    if (Time.time < proximoDanoContato)
+        return;
+
+    collision.gameObject.SendMessage(
+        metodoDanoPlayer,
+        danoContato,
+        SendMessageOptions.DontRequireReceiver
+    );
+
+    proximoDanoContato = Time.time + intervaloDanoContato;
 }
 }
